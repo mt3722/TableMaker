@@ -159,16 +159,16 @@
         </div>
         <div class="input-row">
             <div class="input-group">
-                <label for="order">排序方式</label>
+                <label for="order">排列方向</label>
                 <select id="order">
-                    <option value="horizontal-rtl">橫向右到左</option>
-                    <option value="horizontal-ltr">橫向左到右</option>
-                    <option value="vertical-ltr">直向左到右</option>
-                    <option value="vertical-rtl">直向右到左</option>
+                    <option value="horizontal-rtl">水平右到左</option>
+                    <option value="horizontal-ltr">水平左到右</option>
+                    <option value="vertical-ltr">垂直左到右</option>
+                    <option value="vertical-rtl">垂直右到左</option>
                 </select>
             </div>
             <div class="input-group">
-                <label for="writing-mode">書寫方向</label>
+                <label for="writing-mode">書寫方式</label>
                 <select id="writing-mode">
                     <option value="vertical-rl">直書</option>
                     <option value="horizontal-tb">橫書</option>
@@ -193,6 +193,7 @@
     <div id="description">
         <h2>功能說明</h2>
         <ul>
+            <li>功能是簡易地創造出可輸入名單的表格，並且可以自訂字型，比如注音字型。</li>
             <li><strong>欄位：</strong>控制欄位數量。</li>
             <li><strong>邊距：</strong>控制表格與紙張邊界距離。</li>
             <li><strong>字型：</strong>設定生成表格的字型，電腦必須有安裝。</li>
@@ -241,7 +242,7 @@
         }
 
         function adjustFontSize(cell) {
-            const maxFontSize = 20; // 最大字體大小
+            const maxFontSize = 32; // 最大字體大小
             const minFontSize = 6;  // 最小字體大小
             let fontSize = maxFontSize;
 
