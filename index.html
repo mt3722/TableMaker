@@ -118,6 +118,27 @@
             display: block;
             margin: 20px auto 0;
         }
+        .print-area {
+            display: grid;
+            justify-content: center;
+            align-content: center;
+        }
+        .cell {
+            border: 1px solid black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            word-wrap: break-word;
+            text-align: center;
+        }
+        .vertical-rl {
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+        }
+        .horizontal-tb {
+            writing-mode: horizontal-tb;
+        }
     </style>
 </head>
 <body>
@@ -312,7 +333,7 @@
 
             const newWindow = window.open('', '', 'width=800,height=600');
             newWindow.document.write('<html><head><title>生成表格</title>');
-            newWindow.document.write('<style>.print-area {display: grid; justify-content: center; align-content: center; grid-template-columns: repeat(' + columns + ', ' + cellWidth + 'mm); grid-template-rows: repeat(' + rows + ', ' + cellHeight + 'mm); margin: ' + marginVertical + 'mm ' + marginHorizontal + 'mm;} .cell {border: 1px solid black; display: flex; align-items: center; justify-content: center; overflow: hidden; word-wrap: break-word;}.vertical-rl {writing-mode: vertical-rl; text-orientation: upright;}.horizontal-tb {writing-mode: horizontal-tb;}</style>');
+            newWindow.document.write('<style>.print-area {display: grid; justify-content: center; align-content: center; grid-template-columns: repeat(' + columns + ', ' + cellWidth + 'mm); grid-template-rows: repeat(' + rows + ', ' + cellHeight + 'mm); margin: ' + marginVertical + 'mm ' + marginHorizontal + 'mm;} .cell {border: 1px solid black; display: flex; align-items: center; justify-content: center; overflow: hidden; word-wrap: break-word; text-align: center;}.vertical-rl {writing-mode: vertical-rl; text-orientation: upright;}.horizontal-tb {writing-mode: horizontal-tb;}</style>');
             newWindow.document.write('</head><body>');
             newWindow.document.write(tableHTML);
             newWindow.document.write('</body></html>');
