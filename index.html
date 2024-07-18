@@ -242,12 +242,12 @@
         }
 
         function adjustFontSize(cell) {
-            const maxFontSize = 300; // 最大字體大小
+            const maxFontSize = 100; // 最大字體大小
             const minFontSize = 6;  // 最小字體大小
             let fontSize = maxFontSize;
 
             while (fontSize >= minFontSize) {
-                cell.style.fontSize = fontSize + 'pt';
+                cell.style.fontSize = fontSize + '1pt';
                 if (cell.scrollWidth <= cell.clientWidth && cell.scrollHeight <= cell.clientHeight) {
                     break;
                 }
