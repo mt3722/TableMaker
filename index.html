@@ -175,6 +175,10 @@
                 </select>
             </div>
         </div>
+        <div class="input-group full-width">
+            <label for="font-size">字體大小</label>
+            <input type="number" id="font-size" placeholder="輸入字體大小 (選填)">
+        </div>
         <div class="info-display">
             <span>資料數量: <span id="data-count">0</span></span>
             <span>表格: <span id="page-info">1/1</span></span>
@@ -200,6 +204,7 @@
             <li><strong>分隔：</strong>設定資料分隔符號。</li>
             <li><strong>排列：</strong>選擇表格排列方式。</li>
             <li><strong>書寫：</strong>選擇表格書寫方向。</li>
+            <li><strong>字體大小：</strong>自訂字體大小，若無輸入則自動調整大小。</li>
             <li><strong>資料：</strong>即時顯示資料的數量。</li>
             <li><strong>表格：</strong>即時顯示目前表格和總表格數。</li>
             <li><strong>上一頁/下一頁：</strong>瀏覽不同頁面的表格資料。</li>
@@ -241,13 +246,17 @@
             document.getElementById('page-info').textContent = `${currentPage + 1}/${totalPages}`;
         }
 
-        function adjustFontSize(cell) {
+        function adjustFontSize(cell, customSize) {
+            if (customSize) {
+                cell.style.fontSize = customSize + 'pt';
+                return;
+            }
             const maxFontSize = 100; // 最大字體大小
             const minFontSize = 6;  // 最小字體大小
             let fontSize = maxFontSize;
 
             while (fontSize >= minFontSize) {
-                cell.style.fontSize = fontSize + '1pt';
+                cell.style.fontSize = fontSize + 'pt';
                 if (cell.scrollWidth <= cell.clientWidth && cell.scrollHeight <= cell.clientHeight) {
                     break;
                 }
@@ -265,6 +274,7 @@
             const dataInput = document.getElementById('data-input').value;
             const order = document.getElementById('order').value;
             const writingMode = document.getElementById('writing-mode').value;
+            const fontSize = document.getElementById('font-size').value;
 
             const pageWidth = 297; // A4橫向寬度 (mm)
             const pageHeight = 210; // A4橫向高度 (mm)
@@ -309,7 +319,7 @@
             newWindow.document.close();
 
             const cells = newWindow.document.querySelectorAll('.cell');
-            cells.forEach(cell => adjustFontSize(cell));
+            cells.forEach(cell => adjustFontSize(cell, fontSize));
         }
 
         function saveData() {
