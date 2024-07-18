@@ -82,7 +82,7 @@
             padding: 10px 5px;
             border: none;
             border-radius: 5px;
-            background-color: #4CAF50;
+            background-color: #333333;
             color: white;
             font-size: 14px;
             cursor: pointer;
@@ -129,11 +129,11 @@
         </div>
         <div class="input-row">
             <div class="input-group">
-                <label for="columns">欄位</label>
+                <label for="columns">水平欄位</label>
                 <input type="number" id="columns" value="18" min="1" max="50" oninput="updatePageInfo()">
             </div>
             <div class="input-group">
-                <label for="rows">行數</label>
+                <label for="rows">垂直欄位</label>
                 <input type="number" id="rows" value="4" min="1" max="50" oninput="updatePageInfo()">
             </div>
         </div>
@@ -149,7 +149,7 @@
         </div>
         <div class="input-row">
             <div class="input-group">
-                <label for="font-family">字型</label>
+                <label for="font-family">自訂字型</label>
                 <input type="text" id="font-family" value="文鼎中特標宋注音">
             </div>
             <div class="input-group">
@@ -159,7 +159,7 @@
         </div>
         <div class="input-row">
             <div class="input-group">
-                <label for="order">排列方式</label>
+                <label for="order">排序方式</label>
                 <select id="order">
                     <option value="horizontal-rtl">橫向右到左</option>
                     <option value="horizontal-ltr">橫向左到右</option>
@@ -193,17 +193,17 @@
     <div id="description">
         <h2>功能說明</h2>
         <ul>
-            <li><strong>欄位行數：</strong>控制欄位數量行/列。</li>
-            <li><strong>邊距：</strong>控制表格邊界距離。</li>
-            <li><strong>字型：</strong>設定生成表格的字型。</li>
+            <li><strong>欄位：</strong>控制欄位數量。</li>
+            <li><strong>邊距：</strong>控制表格與紙張邊界距離。</li>
+            <li><strong>字型：</strong>設定生成表格的字型，電腦必須有安裝。</li>
             <li><strong>分隔：</strong>設定資料分隔符號。</li>
             <li><strong>排列：</strong>選擇表格排列方式。</li>
             <li><strong>書寫：</strong>選擇表格書寫方向。</li>
             <li><strong>資料：</strong>即時顯示資料的數量。</li>
             <li><strong>表格：</strong>即時顯示目前表格和總表格數。</li>
             <li><strong>上一頁/下一頁：</strong>瀏覽不同頁面的表格資料。</li>
-            <li><strong>保存：</strong>將文本框內的內容保存到一個文字檔。</li>
-            <li><strong>讀取：</strong>從本地讀取文字檔並顯示在文本框內。</li>
+            <li><strong>保存：</strong>將輸入框內的資料保存到一個文字檔。</li>
+            <li><strong>讀取：</strong>從電腦讀取文字檔並顯示在文本框內。</li>
             <li><strong>產生：</strong>生成表格並在新分頁中顯示。</li>
         </ul>
         <button id="close-description" onclick="hideDescription()">關閉</button>
