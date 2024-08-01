@@ -1,382 +1,85 @@
+
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生成表格</title>
+    <title>預選物件</title>
     <style>
         body {
-            font-family: 'Microsoft JhengHei', Arial, sans-serif;
-            margin: 0;
-            padding: 10px;
-            background-color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            width: 100%;
-            max-width: 450px;
-            background-color: #fff;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
         }
         h1 {
+            color: #2c3e50;
             text-align: center;
-            color: #333;
-            margin: 0 0 20px 0;
-            font-size: 24px;
         }
-        .input-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .input-group {
-            width: 48%;
-        }
-        .full-width {
+        table {
             width: 100%;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #666;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        input[type="text"],
-        input[type="number"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-        textarea {
-            height: 100px;
-            resize: vertical;
-        }
-        .info-display {
-            display: flex;
-            justify-content: space-between;
-            font-size: 16px;
-            color: #333;
-            margin: 15px 0;
-            padding: 10px 0;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-        }
-        .buttons-container {
-            display: flex;
-            justify-content: space-between;
+            border-collapse: collapse;
             margin-top: 20px;
         }
-        button {
-            flex: 1;
-            padding: 10px 5px;
-            border: none;
-            border-radius: 5px;
-            background-color: #333333;
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
             color: white;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            white-space: nowrap;
-            margin: 0 5px;
         }
-        button:first-child {
-            margin-left: 0;
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
         }
-        button:last-child {
-            margin-right: 0;
+        .btn {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
         }
-        button:hover {
-            background-color: #45a049;
+        .btn:hover {
+            background-color: #2980b9;
         }
-        #description {
+        .hidden-info {
             display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
-            z-index: 1000;
-            max-width: 80%;
-            max-height: 80%;
-            overflow-y: auto;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-top: 1px solid #ddd;
         }
-        #close-description {
-            display: block;
-            margin: 20px auto 0;
-        }
-        .print-area {
-            display: grid;
-            justify-content: center;
-            align-content: center;
-        }
-        .cell {
-            border: 1px solid black;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            word-wrap: break-word;
-            text-align: center;
-        }
-        .vertical-rl {
-            writing-mode: vertical-rl;
-            text-orientation: upright;
-        }
-        .horizontal-tb {
-            writing-mode: horizontal-tb;
+        .toggle-info {
+            cursor: pointer;
+            color: #3498db;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>生成表格</h1>
-        <div class="input-group full-width">
-            <label for="data-input">資料輸入</label>
-            <textarea id="data-input" oninput="updateDataCount()"></textarea>
-        </div>
-        <div class="input-row">
-            <div class="input-group">
-                <label for="columns">水平欄位</label>
-                <input type="number" id="columns" value="18" min="1" max="50" oninput="updatePageInfo()">
-            </div>
-            <div class="input-group">
-                <label for="rows">垂直欄位</label>
-                <input type="number" id="rows" value="4" min="1" max="50" oninput="updatePageInfo()">
-            </div>
-        </div>
-        <div class="input-row">
-            <div class="input-group">
-                <label for="margin-horizontal">水平邊距</label>
-                <input type="number" id="margin-horizontal" value="10" min="0" max="50">
-            </div>
-            <div class="input-group">
-                <label for="margin-vertical">垂直邊距</label>
-                <input type="number" id="margin-vertical" value="10" min="0" max="50">
-            </div>
-        </div>
-        <div class="input-row">
-            <div class="input-group">
-                <label for="font-family">自訂字型</label>
-                <input type="text" id="font-family" value="文鼎中特標宋注音">
-            </div>
-            <div class="input-group">
-                <label for="delimiter">分隔符號</label>
-                <input type="text" id="delimiter" placeholder="輸入分隔符號">
-            </div>
-        </div>
-        <div class="input-row">
-            <div class="input-group">
-                <label for="order">排列方向</label>
-                <select id="order">
-                    <option value="horizontal-rtl">水平右到左</option>
-                    <option value="horizontal-ltr">水平左到右</option>
-                    <option value="vertical-ltr">垂直左到右</option>
-                    <option value="vertical-rtl">垂直右到左</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label for="writing-mode">書寫方式</label>
-                <select id="writing-mode">
-                    <option value="vertical-rl">直書</option>
-                    <option value="horizontal-tb">橫書</option>
-                </select>
-            </div>
-        </div>
-        <div class="input-group full-width">
-            <label for="font-size">字體大小</label>
-            <input type="number" id="font-size" placeholder="輸入字體大小 (選填)">
-        </div>
-        <div class="info-display">
-            <span>資料數量: <span id="data-count">0</span></span>
-            <span>表格: <span id="page-info">1/1</span></span>
-        </div>
-        <div class="buttons-container">
-            <button onclick="showDescription()">說明</button>
-            <button onclick="saveData()">保存</button>
-            <button onclick="document.getElementById('file-input').click()">讀取</button>
-            <button onclick="prevPage()">上一頁</button>
-            <button onclick="nextPage()">下一頁</button>
-            <button onclick="generateTable()">產生</button>
-        </div>
-        <input type="file" id="file-input" style="display:none" onchange="loadData(event)">
-    </div>
-
-    <div id="description">
-        <h2>功能說明</h2>
-        <ul>
-            <li>功能是簡易地創造出可輸入名單的表格，並且可以自訂字型，比如注音字型。</li>
-            <li><strong>欄位：</strong>控制欄位數量。</li>
-            <li><strong>邊距：</strong>控制表格與紙張邊界距離。</li>
-            <li><strong>字型：</strong>設定生成表格的字型，電腦必須有安裝。</li>
-            <li><strong>分隔：</strong>設定資料分隔符號。</li>
-            <li><strong>排列：</strong>選擇表格排列方式。</li>
-            <li><strong>書寫：</strong>選擇表格書寫方向。</li>
-            <li><strong>字體大小：</strong>自訂字體大小，若無輸入則自動調整大小。</li>
-            <li><strong>資料：</strong>即時顯示資料的數量。</li>
-            <li><strong>表格：</strong>即時顯示目前表格和總表格數。</li>
-            <li><strong>上一頁/下一頁：</strong>瀏覽不同頁面的表格資料。</li>
-            <li><strong>保存：</strong>將輸入框內的資料保存到一個文字檔。</li>
-            <li><strong>讀取：</strong>從電腦讀取文字檔並顯示在文本框內。</li>
-            <li><strong>產生：</strong>生成表格並在新分頁中顯示。</li>
-        </ul>
-        <button id="close-description" onclick="hideDescription()">關閉</button>
-    </div>
-
+    <h1>預選物件</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>區域</th><th>建案</th><th>總價</th><th>坪數</th><th>樓層</th><th>屋齡</th><th>地址</th><th>地圖</th><th>查看</th><th>更多</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>西區</td><td>---</td><td>2199</td><td>186.72</td><td>1/7</td><td>29</td><td>台中市西區英士路71號</td><td><a href="https://maps.app.goo.gl/Dw5njtCiM1s5nAd16" class="btn" target="_blank">地圖</a></td><td><a href="https://business.591.com.tw/sale/16050155" class="btn" target="_blank">查看</a></td><td><span class="toggle-info" onclick="toggleInfo(this)">顯示更多</span></td></tr><tr class="hidden-info"><td colspan="10"><p>(仲介) 江小姐 0913003237<br></p><table><tr><td colspan='2'>管理費: 7096</td><td colspan='2'>建物登記: 186.72</td><td colspan='2'>每坪: 11.78</td><td colspan='2'>交通: 國光客運中山代售處站 358公尺</td></tr></tr></table></td></tr><tr><td>南區</td><td>大安紫金城</td><td>3400</td><td>985.86</td><td>B1/20</td><td>26</td><td>台中市南區建國南路一段265號</td><td><a href="https://maps.app.goo.gl/cAwyvz6w3ntTBQZu5" class="btn" target="_blank">地圖</a></td><td><a href="https://business.591.com.tw/sale/15211929" class="btn" target="_blank">查看</a></td><td><span class="toggle-info" onclick="toggleInfo(this)">顯示更多</span></td></tr><tr class="hidden-info"><td colspan="10"><p>(屋主) 林小姐 0986222051<br>(屋主) 顏小姐 0911312279<br></p><table><tr><td colspan='2'>管理費: 29600</td><td colspan='2'>建物登記: 985.86</td><td colspan='2'>每坪: 3.45</td><td colspan='2'>交通: 台中捷運大慶站 418公尺</td></tr></tr></table></td></tr><tr><td>西屯區</td><td>財訊金融</td><td>3550</td><td>236.69</td><td>B1/10</td><td>34.3</td><td>台中市西屯區青海路一段65號</td><td><a href="https://maps.app.goo.gl/bAhxHg691anKHiMg7" class="btn" target="_blank">地圖</a></td><td><a href="https://www.rakuya.com.tw/sell_item/info?ehid=006385227003655&from=list_regular" class="btn" target="_blank">查看</a></td><td><span class="toggle-info" onclick="toggleInfo(this)">顯示更多</span></td></tr><tr class="hidden-info"><td colspan="10"><p>(仲介) 陳鈺璇 0423692762<br></p><table><tr><td colspan='2'>管理費: 10220</td><td colspan='2'>建物登記: 236.69</td><td colspan='2'>主建物: 190.9</td><td colspan='2'>公共設施: 45.8</td></tr><tr><td colspan='2'>交通: 文心櫻花站</td></tr></table></td></tr><tr><td>西區</td><td>中港通商</td><td>4000</td><td>208</td><td>10/25</td><td>32</td><td>台中市西區臺灣大道二段186號</td><td><a href="https://maps.app.goo.gl/mGGkEbtZLh8wQkHN8" class="btn" target="_blank">地圖</a></td><td><a href="https://business.591.com.tw/sale/16114679" class="btn" target="_blank">查看</a></td><td><span class="toggle-info" onclick="toggleInfo(this)">顯示更多</span></td></tr><tr class="hidden-info"><td colspan="10"><p>(仲介) 陳小姐 0906998958<br></p><table><tr><td colspan='2'>每坪: 19.23</td><td colspan='2'>電梯: 1</td><td colspan='2'>交通: 國光客運中山代售處站 334公尺</td></tr></table></td></tr><tr><td>北區</td><td>慶禾財經大樓</td><td>4288</td><td>278.38</td><td>8/20</td><td>32</td><td>台中市北區中清路一段100號</td><td><a href="https://maps.app.goo.gl/tJU95x6PtcUzfJY67" class="btn" target="_blank">地圖</a></td><td><a href="https://www.rakuya.com.tw/sell_item/info?ehid=08caad23130165a" class="btn" target="_blank">查看</a></td><td><span class="toggle-info" onclick="toggleInfo(this)">顯示更多</span></td></tr><tr class="hidden-info"><td colspan="10"><p>(仲介) 蔡佩頤 0933194905<br></p><table><tr><td colspan='2'>管理費: 15966</td><td colspan='2'>建物登記: 278.38</td><td colspan='2'>主建物: 209.17</td><td colspan='2'>公共設施: 44.64</td></tr><tr><td colspan='2'>附屬建物: 24.57</td><td colspan='2'>每坪: 15.4</td><td colspan='2'>車位: 機械式</td></tr></table></td></tr><tr><td>南區</td><td>興大學府城</td><td>5280</td><td>269.31</td><td>2/18</td><td>28</td><td>台中市南區建成路1629號</td><td><a href="https://maps.app.goo.gl/RLR195epoCHAm2ub6" class="btn" target="_blank">地圖</a></td><td><a href="https://business.591.com.tw/sale/16060352" class="btn" target="_blank">查看</a></td><td><span class="toggle-info" onclick="toggleInfo(this)">顯示更多</span></td></tr><tr class="hidden-info"><td colspan="10"><p>(仲介) 劉煥彥 0916850752<br></p><table><tr><td colspan='2'>建物登記: 269.31</td><td colspan='2'>主建物: 186.15</td><td colspan='2'>公共設施: 29%</td><td colspan='2'>每坪: 19.61</td></tr><tr><td colspan='2'>交通: 中興大學站 682公尺</td></tr></table></td></tr><tr><td>南區</td><td>同隆經緯天下</td><td>5500</td><td>299.93</td><td>12/12</td><td>23</td><td>台中市南區美村路二段186號</td><td><a href="https://maps.app.goo.gl/H4fncrNtYgBFuXcf9" class="btn" target="_blank">地圖</a></td><td><a href="https://business.591.com.tw/sale/15968472" class="btn" target="_blank">查看</a></td><td><span class="toggle-info" onclick="toggleInfo(this)">顯示更多</span></td></tr><tr class="hidden-info"><td colspan="10"><p>(仲介) 廖先生 0933852111<br></p><table><tr><td colspan='2'>建物登記: 299.93</td><td colspan='2'>主建物: 173.47</td><td colspan='2'>公共設施: 26%</td><td colspan='2'>每坪: 18.34</td></tr><tr><td colspan='2'>電梯: 2+1</td><td colspan='2'>交通: 五權車站 562公尺</td></tr></table></td></tr><tr><td>北區</td><td>俊國椰林道</td><td>6500</td><td>300.86</td><td>B1/14</td><td>28.7</td><td>台中市北區山西路一段51號</td><td><a href="https://maps.app.goo.gl/SMj78LSmE6Ur7g677" class="btn" target="_blank">地圖</a></td><td><a href="https://www.rakuya.com.tw/sell_item/info?ehid=0d2b9727217884d" class="btn" target="_blank">查看</a></td><td><span class="toggle-info" onclick="toggleInfo(this)">顯示更多</span></td></tr><tr class="hidden-info"><td colspan="10"><p>(仲介) 林惠菁 0953320670<br></p><table><tr><td colspan='2'>公共設施: 76.4</td><td colspan='2'>每坪: 21.6</td><td colspan='2'>交通: 捷運文心中清站出口</td></tr></table></td></tr><tr><td>西區</td><td>啓復澄洲大公益</td><td>6800</td><td>486.3</td><td>B1/14</td><td>25.5</td><td>台中市西區公益路221號</td><td><a href="https://maps.app.goo.gl/eRYu9yoVuqchzT4W9" class="btn" target="_blank">地圖</a></td><td><a href="https://www.rakuya.com.tw/sell_item/info?ehid=07224e249136389" class="btn" target="_blank">查看</a></td><td><span class="toggle-info" onclick="toggleInfo(this)">顯示更多</span></td></tr><tr class="hidden-info"><td colspan="10"><p>(仲介) 陳韋政 0978623306<br></p><table><tr><td colspan='2'>建物登記: 486.3</td><td colspan='2'>主建物: 274.54</td><td colspan='2'>每坪: 13.98</td></tr></table></td></tr><tr><td>西區</td><td>新安世紀金龍</td><td>6000</td><td>217.11</td><td>2/28</td><td>33.1</td><td>台中市西區臺灣大道二段309號</td><td><a href="https://maps.app.goo.gl/xLG7HbKPmVy18oT66" class="btn" target="_blank">地圖</a></td><td><a href="https://market.591.com.tw/37999" class="btn" target="_blank">查看</a></td><td><span class="toggle-info" onclick="toggleInfo(this)">顯示更多</span></td></tr><tr class="hidden-info"><td colspan="10"><p>(仲介) 何杺瑜 0917598785<br></p><table><tr><td colspan='2'>建物登記: 217.11</td><td colspan='2'>主建物: 180.53</td><td colspan='2'>附屬建物: 10.22</td><td colspan='2'>交通: 英才臺灣大道口</td></tr></tr></table></td></tr><tr><td>西區</td><td>企業家大廈</td><td>4850</td><td>230</td><td>6/12</td><td>36.6</td><td>台中市西區英才路408號</td><td><a href="https://maps.app.goo.gl/YC9umcNqL2tQUvwA6" class="btn" target="_blank">地圖</a></td><td><a href="https://buy.housefun.com.tw/buy/house/5078169" class="btn" target="_blank">查看</a></td><td><span class="toggle-info" onclick="toggleInfo(this)">顯示更多</span></td></tr><tr class="hidden-info"><td colspan="10"><p>(仲介) 有巢氏房屋 04-27067033<br></p><table><tr><td colspan='2'>建物登記: 230.98</td><td colspan='2'>主建物: 156.64</td><td colspan='2'>公共設施: 57.01</td><td colspan='2'>附屬建物: 17.33</td></tr><tr><td colspan='2'>每坪: 21</td><td colspan='2'>交通: 英才臺灣大道口</td></tr></table></td></tr>
+        </tbody>
+    </table>
     <script>
-        let currentPage = 0;
-        let totalPages = 1;
-        let dataCount = 0;
-
-        function showDescription() {
-            document.getElementById('description').style.display = 'block';
-        }
-
-        function hideDescription() {
-            document.getElementById('description').style.display = 'none';
-        }
-
-        function updateDataCount() {
-            const delimiter = document.getElementById('delimiter').value;
-            const dataInput = document.getElementById('data-input').value;
-            const data = delimiter ? dataInput.split(delimiter) : dataInput.split('\n');
-            dataCount = data.length;
-            document.getElementById('data-count').textContent = dataCount;
-            updatePageInfo();
-        }
-
-        function updatePageInfo() {
-            const columns = document.getElementById('columns').value;
-            const rows = document.getElementById('rows').value;
-            totalPages = Math.ceil(dataCount / (columns * rows));
-            if (totalPages === 0) totalPages = 1;
-            currentPage = Math.min(currentPage, totalPages - 1); // 確保當前頁面不超過總頁數
-            document.getElementById('page-info').textContent = `${currentPage + 1}/${totalPages}`;
-        }
-
-        function adjustFontSize(cell, customSize) {
-            if (customSize) {
-                cell.style.fontSize = customSize + 'pt';
-                return;
-            }
-            const maxFontSize = 100; // 最大字體大小
-            const minFontSize = 6;  // 最小字體大小
-            let fontSize = maxFontSize;
-
-            while (fontSize >= minFontSize) {
-                cell.style.fontSize = fontSize + 'pt';
-                if (cell.scrollWidth <= cell.clientWidth && cell.scrollHeight <= cell.clientHeight) {
-                    break;
-                }
-                fontSize--;
-            }
-        }
-
-        function generateTable() {
-            const columns = document.getElementById('columns').value;
-            const rows = document.getElementById('rows').value;
-            const marginHorizontal = document.getElementById('margin-horizontal').value;
-            const marginVertical = document.getElementById('margin-vertical').value;
-            const fontFamily = document.getElementById('font-family').value;
-            const delimiter = document.getElementById('delimiter').value;
-            const dataInput = document.getElementById('data-input').value;
-            const order = document.getElementById('order').value;
-            const writingMode = document.getElementById('writing-mode').value;
-            const fontSize = document.getElementById('font-size').value;
-
-            const pageWidth = 297; // A4橫向寬度 (mm)
-            const pageHeight = 210; // A4橫向高度 (mm)
-
-            const cellWidth = (pageWidth - marginHorizontal * 2) / columns;
-            const cellHeight = (pageHeight - marginVertical * 2) / rows;
-
-            const data = delimiter ? dataInput.split(delimiter) : dataInput.split('\n');
-            const totalCells = columns * rows;
-
-            let tableHTML = `<div class="print-area" style="grid-template-columns: repeat(${columns}, ${cellWidth}mm); grid-template-rows: repeat(${rows}, ${cellHeight}mm); margin: ${marginVertical}mm ${marginHorizontal}mm;">`;
-            let startIndex = currentPage * totalCells;
-
-            const getContentIndex = (i, j) => {
-                switch (order) {
-                    case 'horizontal-ltr':
-                        return startIndex + i * columns + (columns - 1 - j);
-                    case 'vertical-ltr':
-                        return startIndex + j * rows + i;
-                    case 'vertical-rtl':
-                        return startIndex + (columns - 1 - j) * rows + i;
-                    default:
-                        return startIndex + i * columns + j;
-                }
-            };
-
-            for (let i = 0; i < rows; i++) {
-                for (let j = 0; j < columns; j++) {
-                    const dataIndex = getContentIndex(i, j);
-                    const content = data[dataIndex] || '';
-                    tableHTML += `<div class="cell ${writingMode}" style="width: ${cellWidth}mm; height: ${cellHeight}mm; font-family: ${fontFamily};">${content}</div>`;
-                }
-            }
-            tableHTML += '</div>';
-
-            const newWindow = window.open('', '', 'width=800,height=600');
-            newWindow.document.write('<html><head><title>生成表格</title>');
-            newWindow.document.write('<style>.print-area {display: grid; justify-content: center; align-content: center; grid-template-columns: repeat(' + columns + ', ' + cellWidth + 'mm); grid-template-rows: repeat(' + rows + ', ' + cellHeight + 'mm); margin: ' + marginVertical + 'mm ' + marginHorizontal + 'mm;} .cell {border: 1px solid black; display: flex; align-items: center; justify-content: center; overflow: hidden; word-wrap: break-word; text-align: center;}.vertical-rl {writing-mode: vertical-rl; text-orientation: upright;}.horizontal-tb {writing-mode: horizontal-tb;}</style>');
-            newWindow.document.write('</head><body>');
-            newWindow.document.write(tableHTML);
-            newWindow.document.write('</body></html>');
-            newWindow.document.close();
-
-            const cells = newWindow.document.querySelectorAll('.cell');
-            cells.forEach(cell => adjustFontSize(cell, fontSize));
-        }
-
-        function saveData() {
-            const dataInput = document.getElementById('data-input').value;
-            const date = new Date();
-            const fileName = `資料_${date.getFullYear()}${date.getMonth() + 1}${date.getDate()}_${date.getHours()}${date.getMinutes()}${date.getSeconds()}.txt`;
-            const blob = new Blob([dataInput], { type: 'text/plain' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = fileName;
-            link.click();
-        }
-
-        function loadData(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('data-input').value = e.target.result;
-                    updateDataCount();
-                };
-                reader.readAsText(file);
-            }
-        }
-
-        function prevPage() {
-            if (currentPage > 0) {
-                currentPage--;
-                updatePageInfo();
-            }
-        }
-
-        function nextPage() {
-            if (currentPage < totalPages - 1) {
-                currentPage++;
-                updatePageInfo();
+        function toggleInfo(element) {
+            var infoRow = element.parentNode.parentNode.nextElementSibling;
+            if (infoRow.style.display === 'none' || infoRow.style.display === '') {
+                infoRow.style.display = 'table-row';
+                element.textContent = '隱藏更多';
+            } else {
+                infoRow.style.display = 'none';
+                element.textContent = '顯示更多';
             }
         }
     </script>
