@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>生成表格</title>
     <style>
+        /* 嵌入文鼎中特標宋注音字型 */
+        @font-face {
+            font-family: '文鼎中特標宋注音';
+            src: url('https://raw.githubusercontent.com/mt3722/TableMaker/main/%E6%96%87%E9%BC%8E%E4%B8%AD%E7%89%B2%E6%A8%99%E5%AE%8B%E6%B3%A8%E9%9F%B3.ttc') format('truetype');
+        }
+
         body {
             font-family: 'Microsoft JhengHei', Arial, sans-serif;
             margin: 0;
@@ -326,7 +332,7 @@
                 for (let j = 0; j < columns; j++) {
                     const dataIndex = getContentIndex(i, j);
                     const content = data[dataIndex] || '';
-                    tableHTML += `<div class="cell ${writingMode}" style="width: ${cellWidth}mm; height: ${cellHeight}mm; font-family: ${fontFamily};">${content}</div>`;
+                    tableHTML += `<div class="cell ${writingMode}" style="width: ${cellWidth}mm; height: ${cellHeight}mm; font-family: ${fontFamily};">\n                        <div style="width:100%; height:6mm; border-bottom:1px solid #000;"></div>\n                        <div style="width:100%; height:35mm; display:flex; align-items:center; justify-content:center;">${content}</div>\n                    </div>`;
                 }
             }
             tableHTML += '</div>';
