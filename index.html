@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>生成表格</title>
-    <meta name=\"version\" content=\"20250506-01\">
     <style id="custom-style">
         /* 嵌入文鼎中特標宋注音字型 */
         @font-face {
             font-family: '文鼎中特標宋注音';
-            src: url('https://raw.githubusercontent.com/mt3722/TableMaker/master/AR_StdMingZuinn_Eb.ttf') format('truetype');
+            src: url('https://raw.githubusercontent.com/mt3722/TableMaker/main/AR_StdMingZuinn_Eb.ttf') format('truetype');
         }
 
         body {
@@ -151,6 +150,7 @@
 <body>
     <div class="container">
         <h1>生成表格</h1>
+        <div style="text-align:right;font-size:12px;color:#666;">版本：20250506-01</div>
         <div class="input-group full-width">
             <label for="data-input">資料輸入</label>
             <textarea id="data-input" oninput="updateDataCount()"></textarea>
@@ -221,8 +221,8 @@
         </div>
         <input type="file" id="file-input" style="display:none" onchange="loadData(event)">
     </div>
-    <div style=\"text-align:center;font-size:12px;color:#999;margin-top:10px;\">版本：20250506-01</div>
-    <div id=\"description\">
+
+    <div id="description">
         <h2>功能說明</h2>
         <ul>
             <li>功能是簡易地創造出可輸入名單的表格，並且可以自訂字型，比如注音字型。</li>
@@ -339,8 +339,7 @@
             tableHTML += '</div>';
 
             const newWindow = window.open('', '', 'width=800,height=600');
-            newWindow.document.write('<html><head><title>生成表格</title>
-    <meta name=\"version\" content=\"20250506-01\">');
+            newWindow.document.write('<html><head><title>生成表格</title>');
             newWindow.document.write('<style>.print-area {display: grid; justify-content: center; align-content: center; grid-template-columns: repeat(' + columns + ', ' + cellWidth + 'mm); grid-template-rows: repeat(' + rows + ', ' + cellHeight + 'mm); margin: ' + marginVertical + 'mm ' + marginHorizontal + 'mm;} .cell {border: 1px solid black; display: flex; align-items: center; justify-content: center; overflow: hidden; word-wrap: break-word; text-align: center;}.vertical-rl {writing-mode: vertical-rl; text-orientation: upright;}.horizontal-tb {writing-mode: horizontal-tb;}</style>');
             newWindow.document.write('</head><body>');
             newWindow.document.write(tableHTML);
