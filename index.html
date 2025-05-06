@@ -8,7 +8,7 @@
         /* 嵌入文鼎中特標宋注音字型 */
         @font-face {
         font-family: '文鼎中特標宋注音';
-        src: url('https://rawcdn.githack.com/mt3722/TableMaker/main/AR_StdMingZuinn_Eb.ttf') format('truetype');
+        src: url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/AR_StdMingZuinn_Eb.ttf') format('truetype');
     }
 
         body {
@@ -150,7 +150,7 @@
 <body>
     <div class="container">
         <h1>生成表格</h1>
-        <div style="text-align:right;font-size:12px;color:#666;">版本：20250506-03</div>
+        <div style="text-align:right;font-size:12px;color:#666;">P250506-02</div>
         <div class="input-group full-width">
             <label for="data-input">資料輸入</label>
             <textarea id="data-input" oninput="updateDataCount()"></textarea>
@@ -220,7 +220,15 @@
             <button onclick="generateTable()">產生</button>
         </div>
         <input type="file" id="file-input" style="display:none" onchange="loadData(event)">
+    
+    <!-- 字型載入測試區 -->
+    <div style="margin-top:20px; text-align:center;">
+      <p id="font-test" style="font-family:'文鼎中特標宋注音',sans-serif; font-size:16px;">
+        注音字型測試：ㄅㄆㄇㄈㄉㄊㄋㄌ
+      </p>
+      <p id="font-status" style="font-size:14px; color:#333;"></p>
     </div>
+</div>
 
     <div id="description">
         <h2>功能說明</h2>
@@ -386,6 +394,14 @@
                 updatePageInfo();
             }
         }
+    
+    <script>
+      document.fonts.load('1em 文鼎中特標宋注音').then(function() {
+        document.getElementById('font-status').textContent = '字型載入成功';
+      }).catch(function() {
+        document.getElementById('font-status').textContent = '字型載入失敗';
+      });
     </script>
+  </script>
 </body>
 </html>
