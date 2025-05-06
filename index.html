@@ -155,7 +155,7 @@
 <body>
     <div class="container">
         <h1>生成表格</h1>
-        <div style="text-align:right;font-size:12px;color:#666;">版本：20250506-09</div>
+        <div style="text-align:right;font-size:12px;color:#666;">P250506-10</div>
         <div class="input-group full-width">
             <label for="data-input">資料輸入</label>
             <textarea id="data-input" oninput="updateDataCount()"></textarea>
@@ -348,6 +348,7 @@
 
             const newWindow = window.open('', '', 'width=800,height=600');
             newWindow.document.write('<html><head><title>生成表格</title>');
+                    newWindow.document.write(document.getElementById('custom-style').outerHTML);
             newWindow.document.write('<style>.print-area {display: grid; justify-content: center; align-content: center; grid-template-columns: repeat(' + columns + ', ' + cellWidth + 'mm); grid-template-rows: repeat(' + rows + ', ' + cellHeight + 'mm); margin: ' + marginVertical + 'mm ' + marginHorizontal + 'mm;} .cell {border: 1px solid black; display: flex; align-items: center; justify-content: center; overflow: hidden; word-wrap: break-word; text-align: center;}.vertical-rl {writing-mode: vertical-rl; text-orientation: upright;}.horizontal-tb {writing-mode: horizontal-tb;}</style>');
             newWindow.document.write('</head><body>');
             newWindow.document.write(tableHTML);
