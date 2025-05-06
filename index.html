@@ -1,5 +1,3 @@
-# 重新檢查和修正HTML內容，並更新版本號為 20250506-16，確保所有功能都能正常運作。
-html_corrected = """
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -91,35 +89,35 @@ html_corrected = """
     <h1>生成表格</h1>
     <div class="version">版本：20250506-16</div>
     <div class="input-group full-width">
-      <label>資料輸入</label>
+      <label for="data-input">資料輸入</label>
       <textarea id="data-input" oninput="updateDataCount()"></textarea>
     </div>
     <div class="input-group">
-      <label>水平欄位</label>
+      <label for="columns">水平欄位</label>
       <input type="number" id="columns" value="18" min="1" max="50" oninput="updatePageInfo()">
     </div>
     <div class="input-group">
-      <label>垂直欄位</label>
+      <label for="rows">垂直欄位</label>
       <input type="number" id="rows" value="4" min="1" max="50" oninput="updatePageInfo()">
     </div>
     <div class="input-group">
-      <label>水平邊距 (mm)</label>
+      <label for="margin-horizontal">水平邊距 (mm)</label>
       <input type="number" id="margin-horizontal" value="10" min="0" max="50">
     </div>
     <div class="input-group">
-      <label>垂直邊距 (mm)</label>
+      <label for="margin-vertical">垂直邊距 (mm)</label>
       <input type="number" id="margin-vertical" value="10" min="0" max="50">
     </div>
     <div class="input-group">
-      <label>自訂字型</label>
+      <label for="font-family">自訂字型</label>
       <input type="text" id="font-family" value="文鼎中特標宋注音">
     </div>
     <div class="input-group">
-      <label>分隔符號</label>
+      <label for="delimiter">分隔符號</label>
       <input type="text" id="delimiter" placeholder="輸入分隔符號">
     </div>
     <div class="input-group">
-      <label>排列方向</label>
+      <label for="order">排列方向</label>
       <select id="order">
         <option value="horizontal-rtl">水平右到左</option>
         <option value="horizontal-ltr">水平左到右</option>
@@ -128,14 +126,14 @@ html_corrected = """
       </select>
     </div>
     <div class="input-group">
-      <label>書寫方式</label>
+      <label for="writing-mode">書寫方式</label>
       <select id="writing-mode">
         <option value="vertical-rl">直書</option>
         <option value="horizontal-tb">橫書</option>
       </select>
     </div>
     <div class="input-group">
-      <label>字體大小 (pt)</label>
+      <label for="font-size">字體大小 (pt)</label>
       <input type="number" id="font-size" placeholder="選填">
     </div>
     <div class="info-display">
@@ -143,12 +141,12 @@ html_corrected = """
       <span>表格: <span id="page-info">1/1</span></span>
     </div>
     <div class="buttons-container">
-      <button onclick="showDescription()">說明</button>
-      <button onclick="generateTable()">產生</button>
-      <button onclick="saveData()">保存</button>
-      <button onclick="loadData()">讀取</button>
-      <button onclick="prevPage()">上一頁</button>
-      <button onclick="nextPage()">下一頁</button>
+      <button type="button" onclick="showDescription()">說明</button>
+      <button type="button" onclick="generateTable()">產生</button>
+      <button type="button" onclick="saveData()">保存</button>
+      <button type="button" onclick="loadData()">讀取</button>
+      <button type="button" onclick="prevPage()">上一頁</button>
+      <button type="button" onclick="nextPage()">下一頁</button>
     </div>
   </div>
 
@@ -161,18 +159,13 @@ html_corrected = """
       <li>支持分頁瀏覽：使用「上一頁/下一頁」切換。</li>
       <li>「保存」可下載資料，「讀取」可載入文字檔。</li>
     </ul>
-    <button onclick="hideDescription()">關閉說明</button>
+    <button type="button" onclick="hideDescription()">關閉說明</button>
   </div>
 
   <script>
     let currentPage = 0, totalPages = 1, dataCount = 0;
 
-    function showDescription() {
-      document.getElementById('description').style.display = 'block';
-    }
-    function hideDescription() {
-      document.getElementById('description').style.display = 'none';
-    }
+    // Initialize the updateDataCount function
     function updateDataCount() {
       const delim = document.getElementById('delimiter').value || '\n';
       const data = document.getElementById('data-input').value.split(delim);
@@ -180,6 +173,15 @@ html_corrected = """
       document.getElementById('data-count').textContent = dataCount;
       updatePageInfo();
     }
+
+    function showDescription() {
+      document.getElementById('description').style.display = 'block';
+    }
+
+    function hideDescription() {
+      document.getElementById('description').style.display = 'none';
+    }
+
     function updatePageInfo() {
       const cols = parseInt(document.getElementById('columns').value, 10);
       const rows = parseInt(document.getElementById('rows').value, 10);
@@ -187,6 +189,7 @@ html_corrected = """
       currentPage = Math.min(currentPage, totalPages - 1);
       document.getElementById('page-info').textContent = (currentPage + 1) + '/' + totalPages;
     }
+
     function adjustFontSize(cell, customSize) {
       if (customSize) {
         cell.style.fontSize = customSize + 'pt'; return;
@@ -198,6 +201,7 @@ html_corrected = """
         size--;
       }
     }
+
     function generateTable() {
       updateDataCount();
       const cols = parseInt(document.getElementById('columns').value, 10);
@@ -212,7 +216,7 @@ html_corrected = """
       const mode = document.getElementById('writing-mode').value;
       const pw = 297, ph = 210;
       const cw = (pw - 2 * mh) / cols, ch = (ph - 2 * mv) / rows;
-      let tableHTML = `<div class="print-area" style="grid-template-columns:repeat(${cols},${cw}mm);grid-template-rows:repeat(${rows},${ch}mm);margin:${mv}mm ${mh}mm;">`;
+      let tableHTML = `<div class="print-area" style="grid-template-columns:repeat(${cols},${cw}mm);grid-template-rows:repeat(${rows},${ch}mm);margin:${mv}mm ${mh}mm;">\n`;
       const start = currentPage * cols * rows;
       for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
@@ -231,6 +235,7 @@ html_corrected = """
       newWin.document.close();
       newWin.document.querySelectorAll('.cell').forEach(c => adjustFontSize(c, fs));
     }
+
     function saveData() {
       const data = document.getElementById('data-input').value;
       const d = new Date();
@@ -238,6 +243,7 @@ html_corrected = """
       const blob = new Blob([data], { type: 'text/plain' });
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = fname; a.click();
     }
+
     function loadData() {
       const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.txt';
       inp.onchange = e => {
@@ -248,14 +254,9 @@ html_corrected = """
       };
       inp.click();
     }
+
     function prevPage() { if (currentPage > 0) { currentPage--; generateTable(); } }
     function nextPage() { if (currentPage < totalPages - 1) { currentPage++; generateTable(); } }
   </script>
 </body>
 </html>
-""" 
-
-with open('/mnt/data/TableMaker_final_v16.html','w',encoding='utf-8') as f:
-    f.write(html_corrected)
-
-"/mnt/data/TableMaker_final_v16.html"
