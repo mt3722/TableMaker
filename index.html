@@ -177,11 +177,9 @@
     function showDescription() {
       document.getElementById('description').style.display = 'block';
     }
-
     function hideDescription() {
       document.getElementById('description').style.display = 'none';
     }
-
     function updatePageInfo() {
       const cols = parseInt(document.getElementById('columns').value, 10);
       const rows = parseInt(document.getElementById('rows').value, 10);
@@ -216,7 +214,7 @@
       const mode = document.getElementById('writing-mode').value;
       const pw = 297, ph = 210;
       const cw = (pw - 2 * mh) / cols, ch = (ph - 2 * mv) / rows;
-      let tableHTML = `<div class="print-area" style="grid-template-columns:repeat(${cols},${cw}mm);grid-template-rows:repeat(${rows},${ch}mm);margin:${mv}mm ${mh}mm;">\n`;
+      let tableHTML = `<div class="print-area" style="grid-template-columns:repeat(${cols},${cw}mm);grid-template-rows:repeat(${rows},${ch}mm);margin:${mv}mm ${mh}mm;">`;
       const start = currentPage * cols * rows;
       for (let i = 0; i < rows; i++) {
         for (let j = 0; j < cols; j++) {
