@@ -4,37 +4,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>生成表格</title>
   <style id="custom-style">
-    /* 版本：20250506-25 */
+    /* 版本：20250506-26 */
     @font-face {
       font-family: '文鼎中特標宋注音';
-      src: url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff2?v=20250506-25') format('woff2'),
-           url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff?v=20250506-25') format('woff'),
-           url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/文鼎中特標宋注音.ttc?v=20250506-25') format('truetype');
-      font-weight: normal;
-      font-style: normal;
+      src: url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff2?v=20250506-26') format('woff2'),
+           url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff?v=20250506-26') format('woff'),
+           url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/文鼎中特標宋注音.ttc?v=20250506-26') format('truetype');
+    }
+    html, body {
+      margin: 0; padding: 0;
+      height: auto; overflow-y: auto;
     }
     body {
       font-family: '文鼎中特標宋注音', sans-serif;
-      margin: 0; padding: 10px;
+      padding: 10px;
       background: #f0f0f0;
-      display: flex; justify-content: center;
-      align-items: flex-start; min-height: 100vh;
+      display: flex; justify-content: center; align-items: flex-start;
+      /* 允許內容超出時滾動 */
     }
     .container {
       width: 100%; max-width: 480px;
       background: #fff; padding: 20px;
       border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-height: calc(100vh - 20px);
+      overflow-y: auto;
     }
     h1 { text-align: center; margin-bottom: 10px; }
     .version { text-align: right; font-size: 12px; color: #666; margin-bottom: 10px; }
     .input-group { margin-bottom: 10px; }
     label { display: block; font-weight: bold; margin-bottom: 5px; }
-    input, textarea, select {
+    textarea, input, select {
       width: 100%; padding: 8px;
       border: 1px solid #ccc; border-radius: 4px;
       font-size: 14px; box-sizing: border-box;
     }
-    textarea { height: 100px; resize: vertical; }
+    textarea {
+      height: 150px;
+      resize: vertical;
+      overflow-y: auto;
+      max-height: 200px;
+    }
     .info-display {
       display: flex; justify-content: space-between;
       margin: 10px 0; font-size: 14px;
@@ -48,12 +57,14 @@
     }
     .buttons-container button:hover { background: #45a049; }
     .print-area {
-      display: grid; justify-content: center; align-content: start;
+      display: grid; justify-content: center;
+      align-content: start;
     }
     .cell {
       border: 1px solid #000;
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden; word-break: break-word; text-align: center;
+      display: flex; align-items: center;
+      justify-content: center; overflow: hidden;
+      word-break: break-word; text-align: center;
     }
     .vertical-rl { writing-mode: vertical-rl; text-orientation: upright; }
   </style>
@@ -61,7 +72,7 @@
 <body>
   <div class="container">
     <h1>生成表格</h1>
-    <div class="version">版本：20250506-25</div><div class="input-group">
+    <div class="version">版本：20250506-26</div><div class="input-group">
   <label for="data-input">資料輸入（每行一個姓名）</label>
   <textarea id="data-input" oninput="updateDataCount()"></textarea>
 </div>
@@ -70,7 +81,7 @@
   <input type="number" id="columns" value="18" min="1" max="50" oninput="updatePageInfo()" />
 </div>
 <div class="input-group">
-  <label for="pairs">姓名列數（每列一組姓名）</label>
+  <label for="pairs">姓名列數（每個姓名對應一列）</label>
   <input type="number" id="pairs" value="4" min="1" max="50" oninput="updatePageInfo()" />
 </div>
 <div class="input-group">
@@ -130,49 +141,49 @@
       const orientation = document.getElementById('orientation').value;
       const fs = document.getElementById('font-size').value;
       const names = document.getElementById('data-input').value.split(/\r?\n/).filter(l => l.trim());
-      // 列高：首列20mm，之後每組 6mm(空)、35mm(姓名)
       const rowHeights = ['20mm'];
-      for (let i = 0; i < pairs; i++) rowHeights.push('6mm','35mm');
+      for (let i = 0; i < pairs; i++) rowHeights.push('6mm', '35mm');
       const perPage = cols * pairs;
       const start = currentPage * perPage;
-      const w = orientation === 'landscape' ? 297 : 210;
-      const cellW = (w - 20) / cols;
+      const pageW = orientation === 'landscape' ? 297 : 210;
+      const cellW = (pageW - 20) / cols;
+
       let html = `<div class="print-area" style="grid-template-columns:repeat(${cols},${cellW}mm);grid-template-rows:${rowHeights.join(' ')};margin:10mm;">`;
-      // 首列合併儲存格
       html += `<div class="cell" style="grid-column:1/${cols+1};height:20mm;"></div>`;
       for (let r = 1; r < rowHeights.length; r++) {
         for (let c = 0; c < cols; c++) {
           let txt = '';
           if (r % 2 === 0) {
-            const idx = start + ((r-1)/2) * cols + c;
+            const idx = start + ((r - 1) / 2) * cols + c;
             txt = names[idx] || '';
           }
           html += `<div class="cell vertical-rl" style="width:${cellW}mm;height:${rowHeights[r]};">${txt}</div>`;
         }
       }
       html += '</div>';
+
       const pop = window.open('', '_blank', 'width=800,height=600');
       pop.document.write(`<html><head><title>列印</title>${document.getElementById('custom-style').outerHTML}`);
       pop.document.write(`<style>@page{size:A4 ${orientation};}</style></head><body>${html}</body></html>`);pop.document.close();
-  pop.document.querySelectorAll('.cell').forEach(c=>adjustFontSize(c,fs));
+  pop.document.querySelectorAll('.cell').forEach(c => adjustFontSize(c, fs));
 }
 
 function saveData() {
   const txt = document.getElementById('data-input').value;
-  const blob = new Blob([txt],{type:'text/plain'});
-  const a = document.createElement('a'); const d=new Date();
-  a.download=`資料_${d.getFullYear()}${d.getMonth()+1}${d.getDate()}_${d.getHours()}${d.getMinutes()}${d.getSeconds()}.txt`;
-  a.href=URL.createObjectURL(blob); a.click();
+  const blob = new Blob([txt], { type: 'text/plain' });
+  const a = document.createElement('a'); const d = new Date();
+  a.download = `資料_${d.getFullYear()}${d.getMonth()+1}${d.getDate()}_${d.getHours()}${d.getMinutes()}${d.getSeconds()}.txt`;
+  a.href = URL.createObjectURL(blob); a.click();
 }
 
 function loadData() {
-  const inp=document.createElement('input'); inp.type='file'; inp.accept='.txt';
-  inp.onchange=e=>{ const f=e.target.files[0]; const r=new FileReader(); r.onload=ev=>{ document.getElementById('data-input').value=ev.target.result; updateDataCount(); }; r.readAsText(f); };
+  const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.txt';
+  inp.onchange = e => { const f = e.target.files[0]; const r = new FileReader(); r.onload = ev => { document.getElementById('data-input').value = ev.target.result; updateDataCount(); }; r.readAsText(f); };
   inp.click();
 }
 
-function prevPage(){ if(currentPage>0){currentPage--;generateTable();}}  
-function nextPage(){ if(currentPage<totalPages-1){currentPage++;generateTable();}}
+function prevPage() { if (currentPage > 0) { currentPage--; generateTable(); } }
+function nextPage() { if (currentPage < totalPages - 1) { currentPage++; generateTable(); } }
 
   </script>
 </body>
