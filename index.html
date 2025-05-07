@@ -66,32 +66,20 @@
     .buttons-container button:hover {
       background: #45a049;
     }
-    #description {
-      display: none;
-      position: fixed; top:50%; left:50%;
-      transform: translate(-50%, -50%);
-      background: #fff; padding:20px;
-      max-width:80%; max-height:80%;
-      overflow-y:auto;
-      box-shadow:0 2px 10px rgba(0,0,0,0.2);
-      border-radius:10px; z-index:1000;
-    }
-    #description h2 { margin-top:0; }
-    #description button {
-      margin-top:15px; padding:8px 12px;
-      background:#333; color:#fff; border:none;
-      border-radius:5px; cursor:pointer;
-    }
     .print-area {
-      display: grid; justify-content: center;
+      display: grid;
+      justify-content: center;
       align-content: center;
     }
     .cell {
-      border:1px solid #000;
-      display:flex; flex-direction:column;
-      align-items:center; justify-content:flex-start;
-      overflow:hidden; word-wrap:break-word;
-      text-align:center;
+      border: 1px solid black;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow: hidden;
+      word-wrap: break-word;
+      text-align: center;
     }
     .vertical-rl { writing-mode: vertical-rl; text-orientation: upright; }
     .horizontal-tb { writing-mode: horizontal-tb; }
@@ -101,7 +89,6 @@
   <div class="container">
     <h1>生成表格</h1>
     <div class="version">版本：20250506-18</div>
-
     <div class="input-group full-width">
       <label for="data-input">資料輸入</label>
       <textarea id="data-input" oninput="updateDataCount()"></textarea>
@@ -115,149 +102,79 @@
       <input type="number" id="rows" value="4" min="1" max="50" oninput="updatePageInfo()">
     </div>
     <div class="input-group">
-      <label for="margin-horizontal">水平邊距 (mm)</label>
-      <input type="number" id="margin-horizontal" value="10" min="0" max="50">
-    </div>
-    <div class="input-group">
-      <label for="margin-vertical">垂直邊距 (mm)</label>
-      <input type="number" id="margin-vertical" value="10" min="0" max="50">
-    </div>
-    <div class="input-group">
-      <label for="font-family">自訂字型</label>
-      <input type="text" id="font-family" value="文鼎中特標宋注音">
-    </div>
-    <div class="input-group">
-      <label for="delimiter">分隔符號</label>
-      <input type="text" id="delimiter" placeholder="預設換行分隔">
+      <label for="font-size">字體大小 (pt)</label>
+      <input type="number" id="font-size" placeholder="選填">
     </div>
     <div class="info-display">
       <span>資料數量: <span id="data-count">0</span></span>
       <span>表格: <span id="page-info">1/1</span></span>
     </div>
     <div class="buttons-container">
-      <button onclick="showDescription()">說明</button>
       <button onclick="generateTable()">產生</button>
-      <button onclick="saveData()">保存</button>
-      <button onclick="loadData()">讀取</button>
-      <button onclick="prevPage()">上一頁</button>
-      <button onclick="nextPage()">下一頁</button>
     </div>
   </div>
 
-  <div id="description">
-    <h2>功能說明</h2>
-    <ul>
-      <li>輸入姓名清單，按欄列設定後，點「產生」可生成 A4 表格。</li>
-      <li>可自訂字型，包含注音字型。</li>
-      <li>每格上方 6 mm 為空白日期欄，下方 35 mm 顯示姓名。</li>
-      <li>保存/讀取資料、分頁瀏覽、顯示說明等功能。</li>
-    </ul>
-    <button onclick="hideDescription()">關閉說明</button>
-  </div>
+  <script>
+    let currentPage = 0, totalPages = 1, dataCount = 0;
 
-<script>
-  let currentPage = 0, totalPages = 1, dataCount = 0;
-
-  // 1. 定義：更新資料數量
-  function updateDataCount() {
-    const delim = document.getElementById('delimiter').value || '\n';
-    const arr = document.getElementById('data-input').value.split(delim);
-    dataCount = arr.filter(s => s.trim()!=='').length;
-    document.getElementById('data-count').textContent = dataCount;
-    updatePageInfo();
-  }
-
-  // 2. 更新頁面資訊
-  function updatePageInfo() {
-    const cols = parseInt(document.getElementById('columns').value,10);
-    const rows = parseInt(document.getElementById('rows').value,10);
-    totalPages = Math.max(Math.ceil(dataCount/(cols*rows)),1);
-    currentPage = Math.min(currentPage, totalPages-1);
-    document.getElementById('page-info').textContent = (currentPage+1)+'/'+totalPages;
-  }
-
-  function showDescription() {
-    document.getElementById('description').style.display = 'block';
-  }
-  function hideDescription() {
-    document.getElementById('description').style.display = 'none';
-  }
-
-  // 調整字體大小以適應格子
-  function adjustFontSize(cell, customSize) {
-    if (customSize) {
-      cell.style.fontSize = customSize+'pt'; return;
+    function updateDataCount() {
+      const input = document.getElementById('data-input').value.trim();
+      const arr = input.split('\n').filter(line => line.trim() !== '');
+      dataCount = arr.length;
+      document.getElementById('data-count').textContent = dataCount;
+      updatePageInfo();
     }
-    for (let size=100; size>=6; size--) {
-      cell.style.fontSize = size+'pt';
-      if (cell.scrollWidth<=cell.clientWidth && cell.scrollHeight<=cell.clientHeight) break;
-    }
-  }
 
-  // 生成表格
-  function generateTable() {
-    updateDataCount();
-    const cols = parseInt(document.getElementById('columns').value,10);
-    const rows = parseInt(document.getElementById('rows').value,10);
-    const mh = parseFloat(document.getElementById('margin-horizontal').value);
-    const mv = parseFloat(document.getElementById('margin-vertical').value);
-    const ff = document.getElementById('font-family').value;
-    const delim = document.getElementById('delimiter').value || '\n';
-    const dataArr = document.getElementById('data-input').value.split(delim);
-    const fs = document.getElementById('font-size').value;
-    const mode = document.getElementById('writing-mode')?.value || 'horizontal-tb';
-    const pw=297, ph=210;
-    const cw=(pw-2*mh)/cols, ch=(ph-2*mv)/rows;
-    let html = `<div class="print-area" style="grid-template-columns:repeat(${cols},${cw}mm);grid-template-rows:repeat(${rows},${ch}mm);margin:${mv}mm ${mh}mm;">`;
-    let start = currentPage*cols*rows;
-    for (let i=0; i<rows; i++){
-      for (let j=0; j<cols; j++){
-        const idx = start + i*cols + j;
-        const txt = (dataArr[idx]||'').trim();
-        html += `<div class="cell ${mode}" style="width:${cw}mm;height:${ch}mm;font-family:'${ff}',sans-serif;">
-                   <div style="width:100%;height:6mm;border-bottom:1px solid #000;"></div>
-                   <div style="width:100%;height:35mm;display:flex;align-items:center;justify-content:center;">${txt}</div>
-                 </div>`;
+    function updatePageInfo() {
+      const cols = parseInt(document.getElementById('columns').value, 10);
+      const rows = parseInt(document.getElementById('rows').value, 10);
+      totalPages = Math.ceil(dataCount / (cols * rows)) || 1;
+      currentPage = Math.min(currentPage, totalPages - 1);
+      document.getElementById('page-info').textContent = `${currentPage + 1}/${totalPages}`;
+    }
+
+    function adjustFontSize(cell, customSize) {
+      if (customSize) {
+        cell.style.fontSize = customSize + 'pt';
+        return;
+      }
+      let size = 100;
+      while (size >= 6) {
+        cell.style.fontSize = size + 'pt';
+        if (cell.scrollWidth <= cell.clientWidth && cell.scrollHeight <= cell.clientHeight) break;
+        size--;
       }
     }
-    html += '</div>';
-    const styleTag = document.getElementById('custom-style').outerHTML;
-    const w = window.open('','_blank','width=800,height=600');
-    w.document.write(`<html><head><title>生成表格</title>${styleTag}</head><body>${html}</body></html>`);
-    w.document.close();
-    w.document.querySelectorAll('.cell').forEach(c => adjustFontSize(c,fs));
-  }
 
-  // 儲存文字
-  function saveData(){
-    const txt = document.getElementById('data-input').value;
-    const d=new Date();
-    const fname = `資料_${d.getFullYear()}${d.getMonth()+1}${d.getDate()}_${d.getHours()}${d.getMinutes()}${d.getSeconds()}.txt`;
-    const blob=new Blob([txt],{type:'text/plain'});
-    const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname; a.click();
-  }
-
-  // 讀取文字
-  function loadData(){
-    const inp=document.createElement('input'); inp.type='file'; inp.accept='.txt';
-    inp.onchange=e=>{
-      const f=e.target.files[0];
-      const r=new FileReader();
-      r.onload=ev=>{
-        document.getElementById('data-input').value = ev.target.result;
-        updateDataCount();
-      };
-      r.readAsText(f);
-    };
-    inp.click();
-  }
-
-  function prevPage(){
-    if (currentPage>0){ currentPage--; generateTable(); }
-  }
-  function nextPage(){
-    if (currentPage<totalPages-1){ currentPage++; generateTable(); }
-  }
-</script>
+    function generateTable() {
+      updateDataCount();
+      const cols = parseInt(document.getElementById('columns').value, 10);
+      const rows = parseInt(document.getElementById('rows').value, 10);
+      const data = document.getElementById('data-input').value.trim().split('\n').filter(line => line.trim() !== '');
+      const fontSize = document.getElementById('font-size').value;
+      const cellWidth = (297 - 20) / cols;
+      const cellHeight = (210 - 20) / rows;
+      let tableHTML = `<div class="print-area" style="grid-template-columns: repeat(${cols}, ${cellWidth}mm); grid-template-rows: repeat(${rows}, ${cellHeight}mm); margin: 10mm;">`;
+      const startIndex = currentPage * cols * rows;
+      for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+          const index = startIndex + i * cols + j;
+          const content = data[index] || '';
+          tableHTML += `<div class="cell vertical-rl" style="width: ${cellWidth}mm; height: ${cellHeight}mm;">
+            <div style="width:100%; height:6mm; border-bottom:1px solid #000;"></div>
+            <div style="width:100%; height:35mm; display:flex; align-items:center; justify-content:center;">${content}</div>
+          </div>`;
+        }
+      }
+      tableHTML += '</div>';
+      const newWindow = window.open('', '', 'width=800,height=600');
+      newWindow.document.write('<html><head><title>生成表格</title>');
+      newWindow.document.write(document.getElementById('custom-style').outerHTML);
+      newWindow.document.write('</head><body>' + tableHTML + '</body></html>');
+      newWindow.document.close();
+      const cells = newWindow.document.querySelectorAll('.cell');
+      cells.forEach(cell => adjustFontSize(cell, fontSize));
+    }
+  </script>
 </body>
 </html>
