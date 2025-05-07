@@ -1,166 +1,174 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生成表格</title>
-    <style id="custom-style">
-        /* 版本：20250506-30 */
-        @font-face {
-            font-family: '文鼎中特標宋注音';
-            src: url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff2?v=20250506-30') format('woff2'),
-                 url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff?v=20250506-30') format('woff'),
-                 url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/文鼎中特標宋注音.ttc?v=20250506-30') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-        body {
-            font-family: '文鼎中特標宋注音', 'Microsoft JhengHei', Arial, sans-serif;
-            margin: 0; padding: 10px;
-            background-color: #f0f0f0;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            width: 100%; max-width: 450px;
-            background: #fff; padding: 20px;
-            border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            overflow-y: auto;
-        }
-        h1 { text-align: center; color: #333; margin-bottom: 20px; font-size: 24px; }
-        .input-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .input-group { width: 48%; }
-        .full-width { width: 100%; }
-        label { display: block; margin-bottom: 5px; color: #666; font-weight: bold; }
-        input, textarea, select {
-            width: 100%; padding: 8px;
-            border: 1px solid #ddd; border-radius: 5px;
-            font-size: 14px; box-sizing: border-box;
-            font-family: inherit;
-        }
-        textarea { height: 100px; resize: vertical; }
-        .info-display {
-            display: flex; justify-content: space-between;
-            font-size: 16px; color: #333;
-            margin: 15px 0; padding: 10px 0;
-            border-top: 1px solid #eee; border-bottom: 1px solid #eee;
-        }
-        .buttons-container { display: flex; gap: 8px; margin-top: 20px; }
-        .buttons-container button {
-            flex: 1; padding: 10px;
-            background: #333; color: #fff; border: none; border-radius: 5px;
-            cursor: pointer; font-size: 14px; font-family: inherit;
-        }
-        .buttons-container button:hover { background: #45a049; }
-        .print-area { display: grid; justify-content: center; align-content: start; }
-        .cell {
-            border: 1px solid #000; display: flex;
-            align-items: center; justify-content: center;
-            overflow: hidden; word-break: break-word; text-align: center;
-            font-family: inherit;
-        }
-        .vertical-rl { writing-mode: vertical-rl; text-orientation: upright; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>生成表格</title>
+  <style id="custom-style">
+    /* 版本：20250506-30-A4-margins-blank */
+    @font-face {
+      font-family: '文鼎中特標宋注音';
+      src: url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff2?v=20250506-30') format('woff2'),
+           url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff?v=20250506-30') format('woff'),
+           url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/文鼎中特標宋注音.ttc?v=20250506-30') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    body {
+      font-family: '文鼎中特標宋注音', 'Microsoft JhengHei', Arial, sans-serif;
+      margin: 0; padding: 10px;
+      background: #f0f0f0;
+      display: flex; justify-content: center; align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 100%; max-width: 450px;
+      background: #fff; padding: 20px;
+      border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      overflow-y: auto;
+    }
+    h1 { text-align: center; color: #333; margin-bottom: 20px; font-size: 24px; }
+    .input-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .input-group { width: 48%; }
+    .full-width { width: 100%; }
+    label { display: block; margin-bottom: 5px; color: #666; font-weight: bold; }
+    input, textarea, select {
+      width: 100%; padding: 8px;
+      border: 1px solid #ddd; border-radius: 5px;
+      font-size: 14px; box-sizing: border-box;
+      font-family: inherit;
+    }
+    textarea { height: 100px; resize: vertical; }
+    .info-display {
+      display: flex; justify-content: space-between;
+      font-size: 16px; color: #333; margin: 15px 0;
+      padding: 10px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee;
+    }
+    .buttons-container { display: flex; gap: 8px; margin-top: 20px; }
+    .buttons-container button {
+      flex: 1; padding: 10px;
+      background: #333; color: #fff; border: none; border-radius: 5px;
+      cursor: pointer; font-size: 14px; font-family: inherit;
+    }
+    .buttons-container button:hover { background: #45a049; }
+    .print-area { display: grid; justify-content: center; align-content: start; }
+    .cell {
+      border: 1px solid #000; display: flex;
+      align-items: center; justify-content: center;
+      overflow: hidden; word-break: break-word; text-align: center;
+      font-family: inherit;
+    }
+    .vertical-rl { writing-mode: vertical-rl; text-orientation: upright; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>生成表格</h1>
-        <div class="input-group full-width">
-            <label for="data-input">資料輸入（每行一筆）</label>
-            <textarea id="data-input" oninput="updateDataCount()"></textarea>
-        </div>
-        <div class="input-row">
-            <div class="input-group">
-                <label for="delimiter">分隔符號（留空用換行）</label>
-                <input type="text" id="delimiter" placeholder=", 或留空使用換行" />
-            </div>
-            <div class="input-group">
-                <label for="columns">水平欄位</label>
-                <input type="number" id="columns" value="18" min="1" max="50" oninput="updatePageInfo()" />
-            </div>
-        </div>
-        <div class="input-row">
-            <div class="input-group">
-                <label for="rows">垂直欄位</label>
-                <input type="number" id="rows" value="4" min="1" max="50" oninput="updatePageInfo()" />
-            </div>
-            <div class="input-group">
-                <label for="orientation">版面方向</label>
-                <select id="orientation">
-                    <option value="portrait">直向</option>
-                    <option value="landscape">橫向</option>
-                </select>
-            </div>
-        </div>
-        <div class="input-group full-width">
-            <label for="font-size">字體大小 (pt，選填)</label>
-            <input type="number" id="font-size" placeholder="自動" />
-        </div>
-        <div class="info-display">
-            <span>資料數量: <span id="data-count">0</span></span>
-            <span>頁次: <span id="page-info">1/1</span></span>
-        </div>
-        <div class="buttons-container">
-            <button onclick="generateTable()">產生</button>
-            <button onclick="prevPage()">上一頁</button>
-            <button onclick="nextPage()">下一頁</button>
-        </div>
+  <div class="container">
+    <h1>生成表格</h1>
+    <div class="input-group full-width">
+      <label for="data-input">資料輸入</label>
+      <textarea id="data-input" oninput="updateDataCount()"></textarea>
     </div>
-    <script>
-        let dataArr = [], currentPage = 0, totalPages = 1;
-        function updateDataCount() {
-            const raw = document.getElementById('data-input').value;
-            const d = document.getElementById('delimiter').value;
-            dataArr = d ? raw.split(d) : raw.split(/\r?\n/);
-            dataArr = dataArr.filter(v=>v.trim()!=='');
-            document.getElementById('data-count').textContent = dataArr.length;
-            updatePageInfo();
+    <div class="input-row">
+      <div class="input-group">
+        <label for="delimiter">分隔符號（留空用換行）</label>
+        <input type="text" id="delimiter" placeholder=", 或留空使用換行" />
+      </div>
+      <div class="input-group">
+        <label for="columns">水平欄位</label>
+        <input type="number" id="columns" value="18" min="1" max="50" oninput="updatePageInfo()" />
+      </div>
+    </div>
+    <div class="input-row">
+      <div class="input-group">
+        <label for="rows">姓名列數</label>
+        <input type="number" id="rows" value="4" min="1" max="50" oninput="updatePageInfo()" />
+      </div>
+      <div class="input-group">
+        <label for="margin-horizontal">水平邊距 (mm)</label>
+        <input type="number" id="margin-horizontal" value="10" min="0" max="50" />
+      </div>
+    </div>
+    <div class="input-row">
+      <div class="input-group">
+        <label for="margin-vertical">垂直邊距 (mm)</label>
+        <input type="number" id="margin-vertical" value="10" min="0" max="50" />
+      </div>
+      <div class="input-group">
+        <label for="orientation">版面方向</label>
+        <select id="orientation">
+          <option value="portrait">直向</option>
+          <option value="landscape">橫向</option>
+        </select>
+      </div>
+    </div>
+    <div class="input-group full-width">
+      <label for="font-size">字體大小 (pt, 選填)</label>
+      <input type="number" id="font-size" placeholder="自動" />
+    </div>
+    <div class="info-display">
+      <span>資料數量: <span id="data-count">0</span></span>
+      <span>頁次: <span id="page-info">1/1</span></span>
+    </div>
+    <div class="buttons-container">
+      <button onclick="generateTable()">產生</button>
+      <button onclick="prevPage()">上一頁</button>
+      <button onclick="nextPage()">下一頁</button>
+    </div>
+  </div>
+  <script>
+    let dataArr = [], currentPage = 0, totalPages = 1;
+    function updateDataCount() {
+      const raw = document.getElementById('data-input').value;
+      const d = document.getElementById('delimiter').value;
+      dataArr = d ? raw.split(d) : raw.split(/\r?\n/);
+      dataArr = dataArr.filter(v => v.trim() !== '');
+      document.getElementById('data-count').textContent = dataArr.length;
+      updatePageInfo();
+    }
+    function updatePageInfo() {
+      const cols = +document.getElementById('columns').value;
+      const rows = +document.getElementById('rows').value;
+      totalPages = Math.max(Math.ceil(dataArr.length / (cols * rows)), 1);
+      currentPage = Math.min(currentPage, totalPages - 1);
+      document.getElementById('page-info').textContent = `${currentPage+1}/${totalPages}`;
+    }
+    function generateTable() {
+      updateDataCount();
+      const cols = +document.getElementById('columns').value;
+      const rows = +document.getElementById('rows').value;
+      const mh = +document.getElementById('margin-horizontal').value;
+      const mv = +document.getElementById('margin-vertical').value;
+      const orient = document.getElementById('orientation').value;
+      const fs = document.getElementById('font-size').value;
+      const pageW = orient === 'landscape' ? 297 : 210;
+      const pageH = orient === 'landscape' ? 210 : 297;
+      const blankH = 6;
+      const nameH = (pageH - mv*2)/rows - blankH;
+      const cellW = (pageW - mh*2)/cols;
+      const rowHeights = [];
+      for (let i=0; i<rows; i++) { rowHeights.push('6mm', `${nameH}mm`); }
+      const perPage = cols * rows;
+      const start = currentPage * perPage;
+      let html = `<div class="print-area" style="grid-template-columns:repeat(${cols},${cellW}mm);grid-template-rows:${rowHeights.join(' ')};margin:${mv}mm ${mh}mm;">`;
+      for (let r=0; r<rowHeights.length; r++) {
+        for (let c=0; c<cols; c++) {
+          let txt = '';
+          if (r % 2 === 1) {
+            const idx = start + ((r-1)/2)*cols + c;
+            txt = dataArr[idx] || '';
+          }
+          html += `<div class="cell vertical-rl" style="width:${cellW}mm;height:${rowHeights[r]};">${txt}</div>`;
         }
-        function updatePageInfo() {
-            const cols = +document.getElementById('columns').value;
-            const rows = +document.getElementById('rows').value;
-            totalPages = Math.max(Math.ceil(dataArr.length / cols / rows),1);
-            currentPage = Math.min(currentPage, totalPages-1);
-            document.getElementById('page-info').textContent = `${currentPage+1}/${totalPages}`;
-        }
-        function generateTable() {
-            updateDataCount();
-            const cols = +document.getElementById('columns').value;
-            const rows = +document.getElementById('rows').value;
-            const orient = document.getElementById('orientation').value;
-            const fs = document.getElementById('font-size').value;
-            const pageW = orient==='landscape'?297:210;
-            const cellW = (pageW-20)/cols;
-            const cellH = ((pageW===297?210:297)-20)/rows; // if portrait, height=297
-            // 新增每列上方空白6mm
-            const rowHeights = [];
-            for(let i=0;i<rows;i++){
-                rowHeights.push('6mm'); // 空白列
-                rowHeights.push(`${cellH}mm`);
-            }
-            const perPage = cols*rows;
-            const start = currentPage*perPage;
-            let html = `<div class="print-area" style="grid-template-columns:repeat(${cols},${cellW}mm);grid-template-rows:${rowHeights.join(' ')};margin:10mm;">`;
-            // 生成格子
-            for(let r=0;r<rowHeights.length;r++){
-                for(let c=0;c<cols;c++){
-                    let txt = '';
-                    if(r%2===1){ // 奇數列為資料列
-                        const idx = start + Math.floor(r/2)*cols + c;
-                        txt = dataArr[idx]||'';
-                    }
-                    html+=`<div class="cell vertical-rl" style="width:${cellW}mm;height:${rowHeights[r]};">${txt}</div>`;
-                }
-            }
-            html+='</div>';
-            const win=window.open('','','width=800,height=600');
-            win.document.write(`<html><head><title>表格</title>${document.getElementById('custom-style').outerHTML}`);
-            win.document.write(`<style>@page{size:A4 ${orient};}</style></head><body>${html}</body></html>`);
-            win.document.close();
-            win.document.querySelectorAll('.cell').forEach(c=>{if(fs)c.style.fontSize=fs+'pt';});
-        }
-        function prevPage(){if(currentPage>0){currentPage--;generateTable();}}
-        function nextPage(){if(currentPage<totalPages-1){currentPage++;generateTable();}}
-    </script>
+      }
+      html += '</div>';
+      const w = window.open('', '_blank', 'width=800,height=600');
+      w.document.write(`<html><head><title>列印</title>${document.getElementById('custom-style').outerHTML}`);
+      w.document.write(`<style>@page{size:A4 ${orient};}</style></head><body>${html}</body></html>`);
+      w.document.close();
+      w.document.querySelectorAll('.cell').forEach(c => { if(fs) c.style.fontSize = fs + 'pt'; });
+    }
+    function prevPage(){ if(currentPage>0){ currentPage--; generateTable(); }}
+    function nextPage(){ if(currentPage<totalPages-1){ currentPage++; generateTable(); }}
+  </script>
 </body>
 </html>
