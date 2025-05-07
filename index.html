@@ -1,287 +1,203 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生成表格</title>
-    <style id="custom-style">
-        /* 版本：20250506-29-embed-font */
-        @font-face {
-            font-family: '文鼎中特標宋注音';
-            src: url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff2?v=20250506-29') format('woff2'),
-                 url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff?v=20250506-29') format('woff'),
-                 url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/文鼎中特標宋注音.ttc?v=20250506-29') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-        body {
-            /* 優先套用注音字型，備援微軟正黑 */
-            font-family: '文鼎中特標宋注音', 'Microsoft JhengHei', Arial, sans-serif;
-            margin: 0;
-            padding: 10px;
-            background-color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            width: 100%;
-            max-width: 450px;
-            background-color: #fff;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            padding: 20px;
-            overflow-y: auto;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin: 0 0 20px 0;
-            font-size: 24px;
-        }
-        .input-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .input-group {
-            width: 48%;
-        }
-        .full-width {
-            width: 100%;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            color: #666;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        input[type="text"],
-        input[type="number"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            box-sizing: border-box;
-            font-family: inherit; /* 繼承自 body 字型 */
-        }
-        textarea {
-            height: 100px;
-            resize: vertical;
-        }
-        .info-display {
-            display: flex;
-            justify-content: space-between;
-            font-size: 16px;
-            color: #333;
-            margin: 15px 0;
-            padding: 10px 0;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-        }
-        .buttons-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-        button {
-            flex: 1;
-            padding: 10px 5px;
-            border: none;
-            border-radius: 5px;
-            background-color: #333333;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            white-space: nowrap;
-            margin: 0 5px;
-            font-family: inherit;
-        }
-        button:first-child { margin-left: 0; }
-        button:last-child { margin-right: 0; }
-        button:hover { background-color: #45a049; }
-        #description {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
-            z-index: 1000;
-            max-width: 80%; max-height: 80%; overflow-y: auto;
-        }
-        #close-description { display: block; margin: 20px auto 0; }
-        .print-area { display: grid; justify-content: center; align-content: center; }
-        .cell {
-            border: 1px solid black;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            word-wrap: break-word;
-            text-align: center;
-            font-family: inherit;
-        }
-        .vertical-rl { writing-mode: vertical-rl; text-orientation: upright; }
-        .horizontal-tb { writing-mode: horizontal-tb; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>生成表格</title>
+  <style id="custom-style">
+    /* 版本：20250506-30 */
+    @font-face {
+      font-family: '文鼎中特標宋注音';
+      src: url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff2?v=20250506-30') format('woff2'),
+           url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff?v=20250506-30') format('woff'),
+           url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/文鼎中特標宋注音.ttc?v=20250506-30') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    body {
+      font-family: '文鼎中特標宋注音', 'Microsoft JhengHei', Arial, sans-serif;
+      margin: 0; padding: 10px;
+      background: #f0f0f0;
+      display: flex; justify-content: center; align-items: flex-start;
+      min-height: 100vh;
+    }
+    .container {
+      width: 100%; max-width: 480px;
+      background: #fff; padding: 20px;
+      border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-height: calc(100vh - 20px); overflow-y: auto;
+    }
+    h1 { text-align: center; margin-bottom: 10px; }
+    .version { text-align: right; font-size: 12px; color: #666; margin-bottom: 10px; }
+    .input-group { margin-bottom: 10px; }
+    label { display: block; font-weight: bold; margin-bottom: 5px; }
+    input, textarea, select {
+      width: 100%; padding: 8px;
+      border: 1px solid #ccc; border-radius: 4px;
+      font-size: 14px; box-sizing: border-box;
+      font-family: inherit;
+    }
+    textarea { height: 150px; resize: vertical; overflow-y: auto; max-height: 200px; }
+    .info-display { display: flex; justify-content: space-between; margin: 10px 0; font-size: 14px; }
+    .buttons-container { display: flex; gap: 8px; margin-top: 10px; }
+    .buttons-container button {
+      flex: 1; padding: 10px;
+      background: #333; color: #fff;
+      border: none; border-radius: 5px;
+      cursor: pointer; font-size: 14px;
+      font-family: inherit;
+    }
+    .buttons-container button:hover { background: #45a049; }
+    .print-area { display: grid; justify-content: center; align-content: start; }
+    .cell {
+      border: 1px solid #000;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; word-break: break-word; text-align: center;
+      font-family: inherit;
+    }
+    .vertical-rl { writing-mode: vertical-rl; text-orientation: upright; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>生成表格</h1>
-        <div class="input-group full-width">
-            <label for="data-input">資料輸入</label>
-            <textarea id="data-input" oninput="updateDataCount()"></textarea>
-        </div>
-        <div class="input-row">
-            <div class="input-group">
-                <label for="columns">水平欄位</label>
-                <input type="number" id="columns" value="18" min="1" max="50" oninput="updatePageInfo()">
-            </div>
-            <div class="input-group">
-                <label for="rows">垂直欄位</label>
-                <input type="number" id="rows" value="4" min="1" max="50" oninput="updatePageInfo()">
-            </div>
-        </div>
-        <div class="input-row">
-            <div class="input-group">
-                <label for="margin-horizontal">水平邊距</label>
-                <input type="number" id="margin-horizontal" value="10" min="0" max="50">
-            </div>
-            <div class="input-group">
-                <label for="margin-vertical">垂直邊距</label>
-                <input type="number" id="margin-vertical" value="10" min="0" max="50">
-            </div>
-        </div>
-        <div class="input-row">
-            <div class="input-group">
-                <label for="font-family">自訂字型</label>
-                <input type="text" id="font-family" value="文鼎中特標宋注音">
-            </div>
-            <div class="input-group">
-                <label for="delimiter">分隔符號</label>
-                <input type="text" id="delimiter" placeholder="輸入分隔符號">
-            </div>
-        </div>
-        <div class="input-row">
-            <div class="input-group">
-                <label for="order">排列方向</label>
-                <select id="order">
-                    <option value="horizontal-rtl">水平右到左</option>
-                    <option value="horizontal-ltr">水平左到右</option>
-                    <option value="vertical-ltr">垂直左到右</option>
-                    <option value="vertical-rtl">垂直右到左</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label for="writing-mode">書寫方式</label>
-                <select id="writing-mode">
-                    <option value="vertical-rl">直書</option>
-                    <option value="horizontal-tb">橫書</option>
-                </select>
-            </div>
-        </div>
-        <div class="input-group full-width">
-            <label for="font-size">字體大小</label>
-            <input type="number" id="font-size" placeholder="輸入字體大小 (選填)">
-        </div>
-        <div class="info-display">
-            <span>資料數量: <span id="data-count">0</span></span>
-            <span>表格: <span id="page-info">1/1</span></span>
-        </div>
-        <div class="buttons-container">
-            <button onclick="showDescription()">說明</button>
-            <button onclick="saveData()">保存</button>
-            <button onclick="document.getElementById('file-input').click()">讀取</button>
-            <button onclick="prevPage()">上一頁</button>
-            <button onclick="nextPage()">下一頁</button>
-            <button onclick="generateTable()">產生</button>
-        </div>
-        <input type="file" id="file-input" style="display:none" onchange="loadData(event)">
+  <div class="container">
+    <h1>生成表格</h1>
+    <div class="version">版本：20250506-30</div>
+
+    <div class="input-group">
+      <label for="data-input">資料輸入（每行一筆資料）</label>
+      <textarea id="data-input" oninput="updateDataCount()"></textarea>
     </div>
-    <div id="description">
-        <h2>功能說明</h2>
-        <ul>
-            <li>功能是簡易地創造出可輸入名單的表格，並且可以自訂字型，比如注音字型。</li>
-            <li><strong>欄位：</strong>控制欄位數量。</li>
-            <li><strong>邊距：</strong>控制表格與紙張邊界距離。</li>
-            <li><strong>字型：</strong>設定生成表格的字型，電腦必須有安裝。</li>
-            <li><strong>分隔：</strong>設定資料分隔符號。</li>
-            <li><strong>排列：</strong>選擇表格排列方式。</li>
-            <li><strong>書寫：</strong>選擇表格書寫方向。</li>
-            <li><strong>字體大小：</strong>自訂字體大小，若無輸入則自動調整大小。</li>
-            <li><strong>資料：</strong>即時顯示資料的數量。</li>
-            <li><strong>表格：</strong>即時顯示目前表格和總表格數。</li>
-            <li><strong>上一頁/下一頁：</strong>瀏覽不同頁面的表格資料。</li>
-            <li><strong>保存：</strong>將輸入框內的資料保存到一個文字檔。</li>
-            <li><strong>讀取：</strong>從電腦讀取文字檔並顯示在文本框內。</li>
-            <li><strong>產生：</strong>生成表格並在新分頁中顯示。</li>
-        </ul>
-        <button id="close-description" onclick="hideDescription()">關閉</button>
+    <div class="input-group">
+      <label for="delimiter">分隔符號（可自訂，預設換行）</label>
+      <input type="text" id="delimiter" placeholder="留空則以換行分隔" />
     </div>
-    <script>
-        let currentPage = 0;
-        let totalPages = 1;
-        let dataCount = 0;
-        function showDescription() { document.getElementById('description').style.display = 'block'; }
-        function hideDescription() { document.getElementById('description').style.display = 'none'; }
-        function updateDataCount() {
-            const delimiter = document.getElementById('delimiter').value;
-            const dataInput = document.getElementById('data-input').value;
-            const data = delimiter ? dataInput.split(delimiter) : dataInput.split('\n');
-            dataCount = data.filter(d=>d.trim()!=='').length;
-            document.getElementById('data-count').textContent = dataCount;
-            updatePageInfo();
+    <div class="input-group">
+      <label for="columns">欄數（每行格數）</label>
+      <input type="number" id="columns" value="18" min="1" max="50" oninput="updatePageInfo()" />
+    </div>
+    <div class="input-group">
+      <label for="rows">列數（每頁姓名列數）</label>
+      <input type="number" id="rows" value="4" min="1" max="50" oninput="updatePageInfo()" />
+    </div>
+    <div class="input-group">
+      <label for="orientation">版面方向</label>
+      <select id="orientation">
+        <option value="portrait">直向 (Portrait)</option>
+        <option value="landscape">橫向 (Landscape)</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="font-size">字體大小 (pt，可選)</label>
+      <input type="number" id="font-size" placeholder="自動調整" />
+    </div>
+    <div class="info-display">
+      <span>資料數量: <span id="data-count">0</span></span>
+      <span>頁次: <span id="page-info">1/1</span></span>
+    </div>
+    <div class="buttons-container">
+      <button onclick="generateTable()">產生</button>
+      <button onclick="saveData()">保存</button>
+      <button onclick="loadData()">讀取</button>
+      <button onclick="prevPage()">上一頁</button>
+      <button onclick="nextPage()">下一頁</button>
+    </div>
+  </div>
+
+  <script>
+    let currentPage = 0, totalPages = 1, dataCount = 0;
+
+    function updateDataCount() {
+      const raw = document.getElementById('data-input').value;
+      const delim = document.getElementById('delimiter').value;
+      const names = delim
+        ? raw.split(delim).filter(l => l.trim() !== '')
+        : raw.split(/\r?\n/).filter(l => l.trim() !== '');
+      dataCount = names.length;
+      document.getElementById('data-count').textContent = dataCount;
+      updatePageInfo();
+    }
+
+    function updatePageInfo() {
+      const cols = +document.getElementById('columns').value;
+      const rows = +document.getElementById('rows').value;
+      totalPages = Math.max(Math.ceil(dataCount / (cols * rows)), 1);
+      currentPage = Math.min(currentPage, totalPages - 1);
+      document.getElementById('page-info').textContent = `${currentPage+1}/${totalPages}`;
+    }
+
+    function adjustFontSize(cell, customSize) {
+      if (customSize) { cell.style.fontSize = customSize + 'pt'; return; }
+      for (let s = 100; s >= 6; s--) {
+        cell.style.fontSize = s + 'pt';
+        if (cell.scrollWidth <= cell.clientWidth && cell.scrollHeight <= cell.clientHeight) break;
+      }
+    }
+
+    function generateTable() {
+      updateDataCount();
+      const cols = +document.getElementById('columns').value;
+      const rows = +document.getElementById('rows').value;
+      const orientation = document.getElementById('orientation').value;
+      const fs = document.getElementById('font-size').value;
+      const raw = document.getElementById('data-input').value;
+      const delim = document.getElementById('delimiter').value;
+      const names = delim
+        ? raw.split(delim).filter(l => l.trim() !== '')
+        : raw.split(/\r?\n/).filter(l => l.trim() !== '');
+
+      const pageW = orientation === 'landscape' ? 297 : 210;
+      const cellW = (pageW - 20) / cols;
+      const dataPerPage = cols * rows;
+      const start = currentPage * dataPerPage;
+
+      // 生成列高陣列：每列以上方空白（0.6cm）再資料（cellHeight）
+      const rowHeights = [];
+      const cellH = (210 - 20) / rows;
+      for (let r = 0; r < rows; r++) {
+        rowHeights.push('6mm');   // 上方空白
+        rowHeights.push(cellH + 'mm'); // 內容格
+      }
+
+      let html = `<div class="print-area" style="grid-template-columns:repeat(${cols},${cellW}mm);grid-template-rows:${rowHeights.join(' ')};margin:10mm;">`;
+      // 依序插入空白與資料格
+      for (let r = 0; r < rowHeights.length; r++) {
+        for (let c = 0; c < cols; c++) {
+          let txt = '';
+          if (r % 2 === 1) { // 奇數行為資料內容
+            const idx = start + Math.floor(r/2)*cols + c;
+            txt = names[idx] || '';
+          }
+          html += `<div class="cell vertical-rl" style="width:${cellW}mm;height:${rowHeights[r]};">${txt}</div>`;
         }
-        function updatePageInfo() {
-            const columns = document.getElementById('columns').value;
-            const rows = document.getElementById('rows').value;
-            totalPages = Math.ceil(dataCount / (columns * rows)) || 1;
-            currentPage = Math.min(currentPage, totalPages - 1);
-            document.getElementById('page-info').textContent = `${currentPage+1}/${totalPages}`;
-        }
-        function adjustFontSize(cell, customSize) {
-            if(customSize){cell.style.fontSize=customSize+'pt';return;}
-            let size=100;while(size>=6){cell.style.fontSize=size+'pt';if(cell.scrollWidth<=cell.clientWidth&&cell.scrollHeight<=cell.clientHeight)break;size--;}
-        }
-        function generateTable() {
-            const columns = document.getElementById('columns').value;
-            const rows = document.getElementById('rows').value;
-            const marginHorizontal = document.getElementById('margin-horizontal').value;
-            const marginVertical = document.getElementById('margin-vertical').value;
-            const fontFamily = document.getElementById('font-family').value;
-            const delimiter = document.getElementById('delimiter').value;
-            const dataInput = document.getElementById('data-input').value;
-            const order = document.getElementById('order').value;
-            const writingMode = document.getElementById('writing-mode').value;
-            const fontSize = document.getElementById('font-size').value;
-            const pageWidth = 297, pageHeight = 210;
-            const cellWidth = (pageWidth - marginHorizontal*2)/columns;
-            const cellHeight = (pageHeight - marginVertical*2)/rows;
-            const raw = delimiter ? dataInput.split(delimiter) : dataInput.split('\n');
-            const data = raw.filter(d=>d.trim()!=='');
-            const totalCells = columns*rows;
-            let tableHTML = `<div class="print-area" style="grid-template-columns:repeat(${columns},${cellWidth}mm);grid-template-rows:repeat(${rows},${cellHeight}mm);margin:${marginVertical}mm ${marginHorizontal}mm;">`;
-            const startIndex = currentPage*totalCells;
-            for(let i=0;i<rows;i++){for(let j=0;j<columns;j++){const idx=startIndex+i*columns+j;const content=data[idx]||'';tableHTML+=`<div class="cell ${writingMode}" style="width:${cellWidth}mm;height:${cellHeight}mm;font-family:'${fontFamily}',sans-serif;">${content}</div>`;}};
-            tableHTML+='</div>';
-            const newWindow=window.open('','_blank','width=800,height=600');
-            newWindow.document.write(`<html><head><title>生成表格</title>${document.getElementById('custom-style').outerHTML}</head><body>${tableHTML}</body></html>`);
-            newWindow.document.close();
-            newWindow.document.querySelectorAll('.cell').forEach(c=>adjustFontSize(c,document.getElementById('font-size').value));
-        }
-        function saveData(){const txt=document.getElementById('data-input').value;const blob=new Blob([txt],{type:'text/plain'});const a=document.createElement('a');const d=new Date();a.download=`資料_${d.getFullYear()}${d.getMonth()+1}${d.getDate()}_${d.getHours()}${d.getMinutes()}${d.getSeconds()}.txt`;a.href=URL.createObjectURL(blob);a.click();}
-        function loadData(e){const f=e.target.files[0];if(f){const r=new FileReader();r.onload=v=>{document.getElementById('data-input').value=v.target.result;updateDataCount();};r.readAsText(f);}}
-        function prevPage(){if(currentPage>0){currentPage--;updatePageInfo();}}
-        function nextPage(){if(currentPage<totalPages-1){currentPage++;updatePageInfo();}}
-    </script>
+      }
+      html += '</div>';
+
+      const pop = window.open('', '_blank', 'width=800,height=600');
+      pop.document.write(`<html><head><title>生成表格</title>${document.getElementById('custom-style').outerHTML}`);
+      pop.document.write(`<style>@page{size:A4 ${orientation};}</style></head><body>${html}</body></html>`);
+      pop.document.close();
+      pop.document.querySelectorAll('.cell').forEach(c => adjustFontSize(c, fs));
+    }
+
+    function saveData() {
+      const txt = document.getElementById('data-input').value;
+      const blob = new Blob([txt], { type: 'text/plain' });
+      const a = document.createElement('a'); const d = new Date();
+      a.download = `資料_${d.getFullYear()}${d.getMonth()+1}${d.getDate()}_${d.getHours()}${d.getMinutes()}${d.getSeconds()}.txt`;
+      a.href = URL.createObjectURL(blob); a.click();
+    }
+
+    function loadData(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = ev => { document.getElementById('data-input').value = ev.target.result; updateDataCount(); };
+        reader.readAsText(file);
+      }
+    }
+
+    function prevPage() { if (currentPage > 0) { currentPage--; generateTable(); } }
+    function nextPage() { if (currentPage < totalPages - 1) { currentPage++; generateTable(); } }
+  </script>
 </body>
 </html>
