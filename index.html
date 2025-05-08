@@ -36,14 +36,23 @@
     h1 {
       position: absolute;
       top: 0cm; /* 標題距離表格框線上方 5cm */
-      left: 0;
+      left: 0cm; /* 標題距離左邊 3.4cm */
       right: 0;
       font-size: 28px; /* 增加字體大小 */
       font-family: '文鼎中特標準宋體';
       font-weight: normal; /* 去除粗體 */
       text-align: center;
       letter-spacing: 2px;
-      
+      margin-left: 0; /* 確保圖片與文字不重疊 */
+    }
+
+    /* 圖片設置，尺寸縮小至 4% */
+    .logo {
+      position: absolute;
+      top: 0.5cm; /* 與標題相同的頂部距離 */
+      left: 11.25cm; /* 標題左側 2cm */
+      width: 3.5%; /* 圖片縮小到4% */
+      height: 3.5%;
     }
 
     /* 設置底部文字的位置與字體大小 */
@@ -54,7 +63,6 @@
       right: 0;
       text-align: center;
       font-size: 24px; /* 增加字體大小 */
-      font-family: '文鼎中特標準宋體';
       letter-spacing: 2px;
     }
 
@@ -149,6 +157,9 @@
   </style>
 </head>
 <body>
+  <!-- 顯示圖片 -->
+  <img src="https://github.com/mt3722/TableMaker/blob/main/121203.png?raw=true" class="logo" alt="Logo">
+
   <!-- 標題區域 -->
   <h1>　　淨土宗竹山念佛會</h1>
   
