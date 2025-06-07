@@ -1,70 +1,269 @@
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  // 顯示當天日期
-  const currentDate = new Date();
-  const formattedDate = currentDate.toLocaleDateString();
-  document.getElementById('current-date').textContent = `日期: ${formattedDate}`;
-
-  const tbody = document.getElementById('tbody');
-  const heights = [0.84, 4.04, 0.84, 4.04, 0.84, 4.04];
-  
-  // 生成6行 × 20列（與原本相同）
-  heights.forEach(h => {
-    const tr = document.createElement('tr');
-    tr.style.height = h + 'cm';
-    for (let c = 1; c <= 20; c++) {
-      const td = document.createElement('td');
-      const input = document.createElement('input');
-      input.type = 'text';
-      td.appendChild(input);
-      tr.appendChild(td);
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>回向表單 20250509v01</title>
+  <style>
+    @font-face {
+      font-family: '文鼎中特標宋注音';
+      src: url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff2?v=20250506-30') format('woff2'),
+           url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff?v=20250506-30') format('woff'),
+           url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/文鼎中特標宋注音.ttc?v=20250506-30') format('truetype');
     }
-    tbody.appendChild(tr);
-  });
 
-  document.getElementById('bulk-load').onclick = () => {
-    // 1. 拆分並解析 raw 資料
-    const raw = document.getElementById('bulk-input').value;
-    const items = raw.split(/\r?\n|,/)
-                     .map(v => v.trim())
-                     .filter(v => v);
-    const records = items.map(item => {
-      const idx = [...item].findIndex(ch => /[\u4e00-\u9fff]/.test(ch));
-      if (idx < 0) return { date: item, name: '' };
-      if (idx === 0) return { date: '', name: item };
-      return { date: item.slice(0, idx), name: item.slice(idx) };
+    @page {
+      size: A4 landscape;
+      margin: 0;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: '文鼎中特標準宋體';
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    /* 標題 */
+    h1 {
+      position: absolute;
+      top: 0cm;
+      left: 0cm;
+      right: 0;
+      font-size: 28px;
+      font-family: '文鼎中特標準宋體';
+      font-weight: normal;
+      text-align: center;
+      letter-spacing: 2px;
+      margin-left: 0;
+    }
+
+    /* Logo */
+    .logo {
+      position: absolute;
+      top: 0.7cm;
+      left: 11.25cm;
+      width: 3.5%;
+      height: 3.5%;
+    }
+
+    /* 日期顯示 */
+    .date-label {
+      position: absolute;
+      top: 1.3cm;
+      right: 1.2cm;
+      font-size: 12px;
+      font-family: '文鼎中特標準宋體';
+      letter-spacing: 1px;
+    }
+
+    /* 底部文字 */
+    .footer {
+      position: absolute;
+      bottom: 0cm;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 24px;
+      letter-spacing: 2px;
+    }
+
+    .table-container {
+      width: 26.4cm;
+      height: calc(6 * 0.84cm + 3 * 4.04cm);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    table {
+      table-layout: fixed;
+      width: 100%;
+      height: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    th, td {
+      width: 1.32cm;
+      padding: 0;
+      text-align: center;
+      vertical-align: middle;
+      border: 0.5px solid #000;
+    }
+
+    tr:nth-child(1) td, tr:nth-child(3) td, tr:nth-child(5) td { height: 0.84cm; }
+    tr:nth-child(2) td, tr:nth-child(4) td, tr:nth-child(6) td { height: 4.04cm; }
+
+    tr:nth-child(1) td input,
+    tr:nth-child(3) td input,
+    tr:nth-child(5) td input {
+        font-size: 14px;
+        font-family: '文鼎中特標準宋體';
+        writing-mode: horizontal-tb;
+        text-orientation: mixed;
+        display: block;
+        margin: 0 auto;
+        height: 100%;
+        line-height: normal;
+        text-align: center;
+    }
+
+    tr:nth-child(2) td input,
+    tr:nth-child(4) td input,
+    tr:nth-child(6) td input {
+      font-family: '文鼎中特標宋注音';
+      font-size: 28px;
+      letter-spacing: 5px;
+      padding-top: 15px;
+      padding-left: 5px;
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+    }
+
+    td input {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      border: none;
+      background: transparent;
+      margin: 0;
+      padding: 0;
+    }
+
+    .controls {
+      position: absolute;
+      top: 1.0cm;
+      left: 1cm;
+      right: 1cm;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 0.5em;
+      border-radius: 4px;
+      z-index: 10;
+    }
+
+    .controls textarea {
+      width: 100%;
+      height: 3em;
+      font-family: inherit;
+    }
+
+    .controls button {
+      margin-top: 0.5em;
+      padding: 0.5em 1em;
+      font-family: inherit;
+    }
+
+    @media print {
+      .controls { display: none !important; }
+      .table-wrapper { overflow: visible !important; }
+      html, body { overflow: visible !important; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Logo -->
+  <img src="https://github.com/mt3722/TableMaker/blob/main/121203.png?raw=true" class="logo" alt="Logo">
+
+  <!-- 顯示日期 -->
+  <div class="date-label" id="current-date"></div>
+
+  <!-- 標題 -->
+  <h1>　　淨土宗竹山念佛會</h1>
+  
+  <!-- 控件區 -->
+  <div class="controls">
+    <textarea id="bulk-input" placeholder="請貼上以逗號或換行分隔的資料..."></textarea>
+    <button id="bulk-load">產生表格</button>
+  </div>
+
+  <!-- 表格區 -->
+  <div class="table-container">
+    <table>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- 底部回向文 -->
+  <p class="footer">願以此功德　平等施一切　同發菩提心　往生安樂國</p>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. 顯示今天日期
+      const currentDate = new Date();
+      const formattedDate = currentDate.toLocaleDateString();
+      document.getElementById('current-date').textContent = `日期: ${formattedDate}`;
+
+      // 2. 動態生成 6x20 的空表格
+      const tbody = document.getElementById('tbody');
+      const heights = [0.84, 4.04, 0.84, 4.04, 0.84, 4.04];
+      heights.forEach(h => {
+        const tr = document.createElement('tr');
+        tr.style.height = h + 'cm';
+        for (let c = 1; c <= 20; c++) {
+          const td = document.createElement('td');
+          const input = document.createElement('input');
+          input.type = 'text';
+          td.appendChild(input);
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      });
+
+      // 3. 點擊按鈕後處理輸入
+      document.getElementById('bulk-load').onclick = () => {
+        const raw = document.getElementById('bulk-input').value;
+        const items = raw.split(/\r?\n|,/).map(v => v.trim()).filter(v => v);
+        const records = items.map(item => {
+          const idx = [...item].findIndex(ch => /[\u4e00-\u9fff]/.test(ch));
+          if (idx < 0) return { date: item, name: '' };
+          if (idx === 0) return { date: '', name: item };
+          return { date: item.slice(0, idx), name: item.slice(idx) };
+        });
+
+        // 取得今日（只到日）
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        // 過濾：空日期保留；有日期且未過期才保留
+        const filtered = records.filter(r => {
+          if (!r.date) return true;
+          const parts = r.date.split('/');
+          if (parts.length !== 2) return false;
+          const month = parseInt(parts[0], 10);
+          const day = parseInt(parts[1], 10);
+          if (isNaN(month) || isNaN(day)) return false;
+          const recDate = new Date(today.getFullYear(), month - 1, day);
+          return recDate >= today;
+        });
+
+        // 清空所有儲存格
+        document.querySelectorAll('input').forEach(i => i.value = '');
+
+        // 填入過濾後的資料
+        filtered.forEach((r, k) => {
+          // 日期欄位
+          const dp = k < 20 ? k : (k < 40 ? k + 20 : k + 40);
+          const dr = Math.floor(dp / 20), dc = dp % 20;
+          const dateCell = tbody.children[dr].querySelectorAll('input')[dc];
+          if (r.date) dateCell.value = r.date;
+
+          // 姓名欄位
+          const np = k < 20 ? 20 + k : (k < 40 ? 40 + k : 60 + k);
+          const nr = Math.floor(np / 20), nc = np % 20;
+          const nameCell = tbody.children[nr].querySelectorAll('input')[nc];
+          if (r.name) nameCell.value = r.name;
+        });
+      };
     });
-
-    // 2. 建立「今天」的日期物件（只取年月日，不包含時分秒）
-    const todaySrc = new Date();
-    const today = new Date(todaySrc.getFullYear(), todaySrc.getMonth(), todaySrc.getDate());
-
-    // 3. 過濾：沒有日期的保留；有日期（M/D）且該日期 >= 今天的才保留
-    const filtered = records.filter(r => {
-      if (!r.date) return true;
-      const parts = r.date.split('/').map(n => parseInt(n, 10));
-      if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) return false;
-      const recDate = new Date(today.getFullYear(), parts[0] - 1, parts[1]);
-      return recDate >= today;
-    });
-
-    // 4. 清空所有儲存格
-    document.querySelectorAll('input').forEach(i => i.value = '');
-
-    // 5. 計算每筆要填入的欄位（以 filtered 長度為準）
-    filtered.forEach((r, k) => {
-      // 日期放前面 20 格
-      const dp = k < 20 ? k : (k < 40 ? k + 20 : k + 40);
-      const dr = Math.floor(dp / 20), dc = dp % 20;
-      const dateCell = tbody.children[dr].querySelectorAll('input')[dc];
-      if (r.date) dateCell.value = r.date;
-
-      // 姓名放後面 20 格
-      const np = k < 20 ? 20 + k : (k < 40 ? 40 + k : 60 + k);
-      const nr = Math.floor(np / 20), nc = np % 20;
-      const nameCell = tbody.children[nr].querySelectorAll('input')[nc];
-      if (r.name) nameCell.value = r.name;
-    });
-  };
-});
-</script>
+  </script>
+</body>
+</html>
