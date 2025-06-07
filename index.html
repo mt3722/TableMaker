@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>回向表單 20250607v01</title>
+  <title>橫式回向表單 20250607v01</title>
   <style>
     @font-face {
       font-family: '文鼎中特標宋注音';
@@ -11,256 +11,192 @@
            url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff?v=20250506-30') format('woff'),
            url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/文鼎中特標宋注音.ttc?v=20250506-30') format('truetype');
     }
-
-    @page {
-      size: A4 landscape;
-      margin: 0;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      font-family: '文鼎中特標準宋體';
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-    }
-
-    /* 標題 */
+    @page { size: A4 landscape; margin: 0; }
+    html, body { margin:0; padding:0; width:100%; height:100%; font-family:'文鼎中特標準宋體'; }
+    body { display:flex; justify-content:center; align-items:center; position:relative; }
     h1 {
-      position: absolute;
-      top: 0cm;
-      left: 0cm;
-      right: 0;
-      font-size: 28px;
-      font-family: '文鼎中特標準宋體';
-      font-weight: normal;
-      text-align: center;
-      letter-spacing: 2px;
-      margin-left: 0;
+      position:absolute; top:0; left:0; right:0;
+      text-align:center; font-size:28px; letter-spacing:2px;
+      font-weight:normal; font-family:'文鼎中特標準宋體';
     }
-
-    /* Logo */
     .logo {
-      position: absolute;
-      top: 0.7cm;
-      left: 11.25cm;
-      width: 3.5%;
-      height: 3.5%;
+      position:absolute; top:20px; left:11.25cm;
+      width:1.0cm; height:auto;
     }
-
-    /* 日期顯示 */
     .date-label {
-      position: absolute;
-      top: 1.3cm;
-      right: 1.2cm;
-      font-size: 12px;
-      font-family: '文鼎中特標準宋體';
-      letter-spacing: 1px;
+      position:absolute; top:1.3cm; right:1.2cm;
+      font-size:12px; letter-spacing:1px;
+      font-family:'文鼎中特標準宋體';
     }
-
-    /* 底部文字 */
     .footer {
-      position: absolute;
-      bottom: 0cm;
-      left: 0;
-      right: 0;
-      text-align: center;
-      font-size: 24px;
-      letter-spacing: 2px;
+      position:absolute; bottom:0; left:0; right:0;
+      text-align:center; font-size:24px; letter-spacing:2px;
     }
-
     .table-container {
-      width: 26.4cm;
-      height: calc(6 * 0.84cm + 3 * 4.04cm);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      width:26.4cm;
+      height:calc(6*0.84cm + 3*4.04cm);
+      display:flex; justify-content:center; align-items:center;
     }
-
     table {
-      table-layout: fixed;
-      width: 100%;
-      height: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
+      table-layout:fixed; width:100%; height:100%;
+      border-collapse:separate; border-spacing:0;
     }
-
     th, td {
-      width: 1.32cm;
-      padding: 0;
-      text-align: center;
-      vertical-align: middle;
-      border: 0.5px solid #000;
+      width:1.32cm; padding:0;
+      border:0.5px solid #000;
+      text-align:center; vertical-align:middle;
     }
-
-    tr:nth-child(1) td, tr:nth-child(3) td, tr:nth-child(5) td { height: 0.84cm; }
-    tr:nth-child(2) td, tr:nth-child(4) td, tr:nth-child(6) td { height: 4.04cm; }
-
+    tr:nth-child(1) td,
+    tr:nth-child(3) td,
+    tr:nth-child(5) td { height:0.84cm; }
+    tr:nth-child(2) td,
+    tr:nth-child(4) td,
+    tr:nth-child(6) td { height:4.04cm; }
+    td input {
+      width:100%; height:100%; box-sizing:border-box;
+      border:none; background:transparent; margin:0; padding:0;
+    }
     tr:nth-child(1) td input,
     tr:nth-child(3) td input,
     tr:nth-child(5) td input {
-        font-size: 14px;
-        font-family: '文鼎中特標準宋體';
-        writing-mode: horizontal-tb;
-        text-orientation: mixed;
-        display: block;
-        margin: 0 auto;
-        height: 100%;
-        line-height: normal;
-        text-align: center;
+      font-size:14px; font-family:'文鼎中特標準宋體';
+      writing-mode:horizontal-tb; text-orientation:mixed;
+      display:block; margin:0 auto; line-height:normal; text-align:center;
     }
-
     tr:nth-child(2) td input,
     tr:nth-child(4) td input,
     tr:nth-child(6) td input {
-      font-family: '文鼎中特標宋注音';
-      font-size: 28px;
-      letter-spacing: 5px;
-      padding-top: 15px;
-      padding-left: 5px;
-      writing-mode: vertical-rl;
-      text-orientation: upright;
+      font-family:'文鼎中特標宋注音'; font-size:28px; letter-spacing:5px;
+      padding-top:15px; padding-left:5px;
+      writing-mode:vertical-rl; text-orientation:upright;
     }
-
-    td input {
-      width: 100%;
-      height: 100%;
-      box-sizing: border-box;
-      border: none;
-      background: transparent;
-      margin: 0;
-      padding: 0;
-    }
-
     .controls {
-      position: absolute;
-      top: 1.0cm;
-      left: 1cm;
-      right: 1cm;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 0.5em;
-      border-radius: 4px;
-      z-index: 10;
+      position:absolute; top:1cm; left:1cm; right:1cm;
+      background:rgba(255,255,255,0.9); padding:.5em; border-radius:4px; z-index:10;
     }
-
     .controls textarea {
-      width: 100%;
-      height: 3em;
-      font-family: inherit;
+      width:100%; height:3em; font-family:inherit;
     }
-
     .controls button {
-      margin-top: 0.5em;
-      padding: 0.5em 1em;
-      font-family: inherit;
+      margin-top:.5em; padding:.5em 1em; font-family:inherit;
     }
-
     @media print {
-      .controls { display: none !important; }
-      .table-wrapper { overflow: visible !important; }
-      html, body { overflow: visible !important; }
+      .controls { display:none!important; }
+      html, body { overflow:visible!important; }
     }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/cnchar-all/cnchar.all.min.js"></script>
 </head>
 <body>
-  <!-- Logo -->
   <img src="https://github.com/mt3722/TableMaker/blob/main/121203.png?raw=true" class="logo" alt="Logo">
-
-  <!-- 顯示日期 -->
   <div class="date-label" id="current-date"></div>
-
-  <!-- 標題 -->
   <h1>　　淨土宗竹山念佛會</h1>
-  
-  <!-- 控件區 -->
+
   <div class="controls">
-    <textarea id="bulk-input" placeholder="請貼上以逗號或換行分隔的資料..."></textarea>
+    <textarea id="bulk-input" placeholder="請以換行或逗號分隔每筆資料;日期後加.表示隔年日期（範例：6/5.張三）。"></textarea>
     <button id="bulk-load">產生表格</button>
   </div>
 
-  <!-- 表格區 -->
   <div class="table-container">
-    <table>
-      <tbody id="tbody"></tbody>
-    </table>
+    <table><tbody id="tbody"></tbody></table>
   </div>
 
-  <!-- 底部回向文 -->
   <p class="footer">願以此功德　平等施一切　同發菩提心　往生安樂國</p>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. 顯示今天日期
-      const currentDate = new Date();
-      const formattedDate = currentDate.toLocaleDateString();
-      document.getElementById('current-date').textContent = `日期: ${formattedDate}`;
+      // 顯示民國日期
+      const now = new Date();
+      const mYear = now.getFullYear() - 1911;
+      const mMonth = now.getMonth() + 1;
+      const mDay = now.getDate();
+      document.getElementById('current-date').textContent =
+        `${mYear}年${mMonth}月${mDay}日`;
 
-      // 2. 動態生成 6x20 的空表格
+      // 生成6×20空格
       const tbody = document.getElementById('tbody');
-      const heights = [0.84, 4.04, 0.84, 4.04, 0.84, 4.04];
-      heights.forEach(h => {
+      [0.84,4.04,0.84,4.04,0.84,4.04].forEach(h => {
         const tr = document.createElement('tr');
         tr.style.height = h + 'cm';
-        for (let c = 1; c <= 20; c++) {
+        for (let i = 0; i < 20; i++) {
           const td = document.createElement('td');
-          const input = document.createElement('input');
-          input.type = 'text';
-          td.appendChild(input);
+          const inp = document.createElement('input');
+          inp.type = 'text';
+          td.appendChild(inp);
           tr.appendChild(td);
         }
         tbody.appendChild(tr);
       });
 
-      // 3. 點擊按鈕後處理輸入
+      // 筆劃比較器
+      const strokeCollator = new Intl.Collator('zh-Hant-u-co-stroke');
+
+      // 處理輸入並排序
       document.getElementById('bulk-load').onclick = () => {
         const raw = document.getElementById('bulk-input').value;
-        const items = raw.split(/\r?\n|,/).map(v => v.trim()).filter(v => v);
-        const records = items.map(item => {
-          const idx = [...item].findIndex(ch => /[\u4e00-\u9fff]/.test(ch));
-          if (idx < 0) return { date: item, name: '' };
-          if (idx === 0) return { date: '', name: item };
-          return { date: item.slice(0, idx), name: item.slice(idx) };
-        });
+        const lines = raw.split(/\r?\n|,/).map(s=>s.trim()).filter(Boolean);
 
-        // 取得今日（只到日）
-        const now = new Date();
+        // 當天 00:00
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-        // 過濾：空日期保留；有日期且未過期才保留
-        const filtered = records.filter(r => {
-          if (!r.date) return true;
-          const parts = r.date.split('/');
-          if (parts.length !== 2) return false;
-          const month = parseInt(parts[0], 10);
-          const day = parseInt(parts[1], 10);
-          if (isNaN(month) || isNaN(day)) return false;
-          const recDate = new Date(today.getFullYear(), month - 1, day);
-          return recDate >= today;
+        // 解析：name、date、marker（末尾“.”表示明年）
+        const items = lines.map(item => {
+          let m, name, dateStr, marker=false;
+          if (m = item.match(/^(\d{1,2}[\/-]\d{1,2}\.?)(.+)$/)) {
+            dateStr = m[1].trim();
+            name    = m[2].trim();
+          } else if (m = item.match(/^(.+?)(\d{1,2}[\/-]\d{1,2}\.?)$/)) {
+            name    = m[1].trim();
+            dateStr = m[2].trim();
+          } else {
+            name = item;
+            dateStr = null;
+          }
+          if (dateStr && dateStr.endsWith('.')) {
+            marker = true;
+            dateStr = dateStr.slice(0, -1);
+          }
+          const date = dateStr
+            ? (() => {
+                const [mm,dd] = dateStr.split(/\/|-/).map(n=>parseInt(n,10));
+                const year = marker
+                  ? now.getFullYear() + 1
+                  : now.getFullYear();
+                return new Date(year, mm-1, dd);
+              })()
+            : null;
+          return { display: item, name, date, marker };
         });
 
-        // 清空所有儲存格
-        document.querySelectorAll('input').forEach(i => i.value = '');
+        // 特殊優先
+        const special = items.filter(x=>x.name.startsWith('釋')||x.name.endsWith('法師'));
+        const rest    = items.filter(x=>!special.includes(x));
 
-        // 填入過濾後的資料
-        filtered.forEach((r, k) => {
-          // 日期欄位
-          const dp = k < 20 ? k : (k < 40 ? k + 20 : k + 40);
-          const dr = Math.floor(dp / 20), dc = dp % 20;
+        // 只比姓名筆劃
+        special.sort((a,b)=>strokeCollator.compare(a.name,b.name));
+        rest   .sort((a,b)=>strokeCollator.compare(a.name,b.name));
+
+        // 合併後再過濾：只有無 marker 而且今年日期 < today 才去除
+        const finalList = [...special,...rest].filter(x=>
+          x.date===null || x.marker || x.date >= today
+        );
+
+        // 清空
+        document.querySelectorAll('input').forEach(i=>i.value='');
+
+        // 填入
+        finalList.forEach((r,k)=>{
+          const dp = k<20? k : (k<40? k+20 : k+40);
+          const dr = Math.floor(dp/20), dc = dp%20;
           const dateCell = tbody.children[dr].querySelectorAll('input')[dc];
-          if (r.date) dateCell.value = r.date;
+          dateCell.value = r.date
+            ? `${r.date.getMonth()+1}/${r.date.getDate()}`
+            : '';
 
-          // 姓名欄位
-          const np = k < 20 ? 20 + k : (k < 40 ? 40 + k : 60 + k);
-          const nr = Math.floor(np / 20), nc = np % 20;
+          const np = k<20? 20+k : (k<40? 40+k : 60+k);
+          const nr = Math.floor(np/20), nc = np%20;
           const nameCell = tbody.children[nr].querySelectorAll('input')[nc];
-          if (r.name) nameCell.value = r.name;
+          nameCell.value = r.name;
         });
       };
     });
