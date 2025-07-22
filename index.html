@@ -6,18 +6,23 @@
   <title>橫式回向表單 20250607v01</title>
   <style>
     @font-face {
-      font-family: '文鼎中特標宋注音';
-      src: url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff2?v=20250506-30') format('woff2'),
-           url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/StdMingZuinnEG-Eb.woff?v=20250506-30') format('woff'),
-           url('https://cdn.jsdelivr.net/gh/mt3722/TableMaker/文鼎中特標宋注音.ttc?v=20250506-30') format('truetype');
+      font-family: 'BpmfGenRyuMin'; /* 原為 文鼎中特標宋注音 */
+      src: url('https://raw.githubusercontent.com/mt3722/TableMaker/main/BpmfGenRyuMin-B.woff2') format('woff2'),
+           url('https://raw.githubusercontent.com/mt3722/TableMaker/main/BpmfGenRyuMin-B.woff') format('woff');
     }
+    @font-face {
+      font-family: 'GenRyuMin2'; /* 原為 文鼎中特標準宋體 */
+      src: url('https://raw.githubusercontent.com/mt3722/TableMaker/main/GenRyuMin2TW-B.woff2') format('woff2'),
+           url('https://raw.githubusercontent.com/mt3722/TableMaker/main/GenRyuMin2TW-B.woff') format('woff');
+    }
+
     @page { size: A4 landscape; margin: 0; }
-    html, body { margin:0; padding:0; width:100%; height:100%; font-family:'文鼎中特標準宋體'; }
+    html, body { margin:0; padding:0; width:100%; height:100%; font-family:'GenRyuMin2'; } /* 替換為 GenRyuMin2 */
     body { display:flex; justify-content:center; align-items:center; position:relative; }
     h1 {
       position:absolute; top:0; left:0; right:0;
       text-align:center; font-size:28px; letter-spacing:2px;
-      font-weight:normal; font-family:'文鼎中特標準宋體';
+      font-weight:normal; font-family:'GenRyuMin2'; /* 替換為 GenRyuMin2 */
     }
     .logo {
       position:absolute; top:20px; left:11.25cm;
@@ -26,7 +31,7 @@
     .date-label {
       position:absolute; top:1.3cm; right:1.2cm;
       font-size:12px; letter-spacing:1px;
-      font-family:'文鼎中特標準宋體';
+      font-family:'GenRyuMin2'; /* 替換為 GenRyuMin2 */
     }
     .footer {
       position:absolute; bottom:0; left:0; right:0;
@@ -42,7 +47,8 @@
       border-collapse:separate; border-spacing:0;
     }
     th, td {
-      width:1.32cm; padding:0;
+      width:1.32cm;
+      padding:0;
       border:0.5px solid #000;
       text-align:center; vertical-align:middle;
     }
@@ -52,24 +58,51 @@
     tr:nth-child(2) td,
     tr:nth-child(4) td,
     tr:nth-child(6) td { height:4.04cm; }
-    td input {
-      width:100%; height:100%; box-sizing:border-box;
-      border:none; background:transparent; margin:0; padding:0;
+    
+    /* 用於隱藏 input 的樣式 */
+    .cell-hidden-input {
+        display: none; /* 完全隱藏 input 元素 */
     }
-    tr:nth-child(1) td input,
-    tr:nth-child(3) td input,
-    tr:nth-child(5) td input {
-      font-size:14px; font-family:'文鼎中特標準宋體';
-      writing-mode:horizontal-tb; text-orientation:mixed;
-      display:block; margin:0 auto; line-height:normal; text-align:center;
+
+    /* 用於顯示文字的 div 樣式 */
+    .cell-text-display {
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      border: none; /* 移除可能的邊框 */
+      background: transparent;
+      margin: 0;
+      padding: 0;
+      
+      /* 通用顯示 div 的樣式，主要用於日期行 (水平書寫) */
+      font-size:16px;
+      font-family:'GenRyuMin2'; /* 替換為 GenRyuMin2 */
+      writing-mode:horizontal-tb;
+      text-orientation:mixed;
+      display:flex;
+      justify-content:center; /* 水平書寫時，保持水平居中 */
+      align-items:center; /* 使文字在垂直方向上靠上對齊 */
+      line-height:normal; 
+      overflow: visible; /* 確保內容不會被剪裁，這是關鍵！ */
     }
-    tr:nth-child(2) td input,
-    tr:nth-child(4) td input,
-    tr:nth-child(6) td input {
-      font-family:'文鼎中特標宋注音'; font-size:28px; letter-spacing:5px;
-      padding-top:15px; padding-left:5px;
-      writing-mode:vertical-rl; text-orientation:upright;
+
+    /* 針對垂直書寫的名字行（使用 BpmfGenRyuMin 字體） */
+    tr:nth-child(2) .cell-text-display, /* 注意這裡選擇器改為 .cell-text-display */
+    tr:nth-child(4) .cell-text-display,
+    tr:nth-child(6) .cell-text-display {
+      font-family:'BpmfGenRyuMin', 'GenRyuMin2'; /* **修改這裡：添加 GenRyuMin2 作為後備字型** */
+      font-size:28px;
+      letter-spacing:5px;
+      padding-top:15px; /* 在 vertical-rl 中是右邊內距 */
+      padding-left:5px; /* 在 vertical-rl 中是頂部內距 */
+      writing-mode:vertical-rl;
+      text-orientation:upright;
+      line-height: 1; /* 嘗試一個較小但有效的 line-height 值，例如 1.2 或 1.5 */
+      display: flex;
+      justify-content: normal; /* 在 vertical-rl 中，這會將文字列「靠右」對齊 */
+      align-items: center; /* 在 vertical-rl 中，這會將文字列「靠頂部」對齊 */
     }
+
     .controls {
       position:absolute; top:1cm; left:1cm; right:1cm;
       background:rgba(255,255,255,0.9); padding:.5em; border-radius:4px; z-index:10;
@@ -120,9 +153,18 @@
         tr.style.height = h + 'cm';
         for (let i = 0; i < 20; i++) {
           const td = document.createElement('td');
-          const inp = document.createElement('input');
-          inp.type = 'text';
-          td.appendChild(inp);
+          
+          // 創建用於顯示文字的 div
+          const textDisplayDiv = document.createElement('div');
+          textDisplayDiv.className = 'cell-text-display';
+          td.appendChild(textDisplayDiv);
+
+          // 創建隱藏的 input，如果未來需要用戶輸入或數據提取
+          const hiddenInput = document.createElement('input');
+          hiddenInput.type = 'text';
+          hiddenInput.className = 'cell-hidden-input';
+          td.appendChild(hiddenInput);
+
           tr.appendChild(td);
         }
         tbody.appendChild(tr);
@@ -181,22 +223,40 @@
           x.date===null || x.marker || x.date >= today
         );
 
-        // 清空
-        document.querySelectorAll('input').forEach(i=>i.value='');
+        // 清空所有顯示 div 和隱藏 input
+        document.querySelectorAll('.cell-text-display').forEach(d=>d.textContent='');
+        document.querySelectorAll('.cell-hidden-input').forEach(i=>i.value='');
 
         // 填入
         finalList.forEach((r,k)=>{
-          const dp = k<20? k : (k<40? k+20 : k+40);
-          const dr = Math.floor(dp/20), dc = dp%20;
-          const dateCell = tbody.children[dr].querySelectorAll('input')[dc];
-          dateCell.value = r.date
+          const dp = k<20? k : (k<40? k+20 : k+40); // 計算當前資料在 60 個總位置中的索引
+          const dr = Math.floor(dp/20); // 決定是第幾行 (0, 1, 2, 3, 4, 5)
+          const dc = dp%20; // 決定是第幾列 (0-19)
+          
+          // 找到日期顯示的 div
+          const dateDisplayDiv = tbody.children[dr].querySelectorAll('.cell-text-display')[dc];
+          dateDisplayDiv.textContent = r.date
             ? `${r.date.getMonth()+1}/${r.date.getDate()}`
             : '';
 
-          const np = k<20? 20+k : (k<40? 40+k : 60+k);
-          const nr = Math.floor(np/20), nc = np%20;
-          const nameCell = tbody.children[nr].querySelectorAll('input')[nc];
-          nameCell.value = r.name;
+          // 填充隱藏的日期 input
+          const dateHiddenInput = tbody.children[dr].querySelectorAll('.cell-hidden-input')[dc];
+          dateHiddenInput.value = r.date
+            ? `${r.date.getMonth()+1}/${r.date.getDate()}`
+            : '';
+
+
+          const np = k<20? 20+k : (k<40? 40+k : 60+k); // 計算名字資料的索引，跳過日期行
+          const nr = Math.floor(np/20);
+          const nc = np%20;
+
+          // 找到名字顯示的 div
+          const nameDisplayDiv = tbody.children[nr].querySelectorAll('.cell-text-display')[nc];
+          nameDisplayDiv.textContent = r.name;
+          
+          // 填充隱藏的名字 input
+          const nameHiddenInput = tbody.children[nr].querySelectorAll('.cell-hidden-input')[nc];
+          nameHiddenInput.value = r.name;
         });
       };
     });
